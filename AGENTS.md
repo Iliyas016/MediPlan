@@ -39,6 +39,18 @@ It is a hackathon entry (BUSINESS CUP 2.0, Money track). Submission deadline:
    print a key.
 6. The LLM provider is the OpenAI API (`OPENAI_API_KEY`). There is no Claude
    API key. Check the current OpenAI documentation before writing API code.
+7. A working paywall with a clear price ($49 per year) is required; a pricing
+   page alone is not enough. Stripe runs in test mode with the test card shown
+   on screen. The main flow up to the verdict stays free, so judges never have
+   to pay or sign up.
+8. At least one return mechanic must be built and working: the `/year`
+   tracker (progress toward the deductible, logged bills, key dates).
+9. Health is a sensitive topic. Ask how much care the family expects (visits,
+   prescriptions), never for diagnoses. Give no medical advice. Health details
+   stay in the visitor's browser.
+10. Built-in sample plans are allowed only if they go through the same live
+    pipeline as an upload, and they must be labelled as sample data.
+11. No dead buttons or links. Hide what does not work yet.
 
 ## Architecture
 
@@ -57,7 +69,12 @@ It is a hackathon entry (BUSINESS CUP 2.0, Money track). Submission deadline:
   `{ plan: ExtractedPlan, warnings: string[] }`.
 
 User flow and routes: `/` landing -> `/start` upload, review, premiums ->
-`/profile` family questionnaire -> `/result` verdict. `/pricing` is static.
+`/profile` family questionnaire -> `/result` verdict -> `/year` plan-year
+tracker (paid). `/pricing` explains the subscription and starts the checkout.
+
+Free: the whole flow up to the verdict (best option, yearly saving, expected
+cost). Paid: the full comparison of every option, the bad-year stress test and
+the `/year` tracker.
 
 ## Who owns which files
 
@@ -65,9 +82,11 @@ Edit only your own files. The two domain files are shared contracts: do not
 change them without telling the team first.
 
 - Ilyas: `src/app/page.tsx`, `src/app/profile/**`, `src/app/result/**`,
-  `src/components/profile/**`, `src/components/result/**`, `src/lib/calc/**`
+  `src/app/year/**`, `src/components/profile/**`, `src/components/result/**`,
+  `src/components/year/**`, `src/lib/calc/**`
 - Abuka: `src/app/api/**`, `src/app/start/**`, `src/components/start/**`,
-  `src/lib/extract/**`, `src/lib/domain/reference-prices.ts`
+  `src/components/paywall/**`, `src/lib/extract/**`,
+  `src/lib/domain/reference-prices.ts`
 - Borch: `public/samples/**`, `docs/research/**`, `src/app/pricing/**`,
   `src/components/ui/**`, `src/app/globals.css`
 - Shared contracts: `src/lib/domain/plan.ts`, `src/lib/domain/profile.ts`,

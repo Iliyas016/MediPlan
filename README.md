@@ -47,6 +47,14 @@ There are no accounts. A visitor's plans and profile stay in their browser
 | Upload, review, profile and result screens | Not built yet |
 | Reference prices (`src/lib/domain/reference-prices.ts`) | Rough estimates, not yet sourced |
 
+## Key dependencies
+
+- Next.js, React, TypeScript, Tailwind CSS
+- OpenAI API: reads the numbers out of uploaded SBC PDFs, nothing else
+- zod: validates everything the model returns before it is used
+- Stripe (test mode): checkout for the annual subscription
+- Vitest: tests for the cost engine
+
 ## Run it
 
 ```bash
