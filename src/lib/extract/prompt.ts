@@ -45,7 +45,7 @@ For each service:
 - copayAmount: the dollar amount for kind "copay", otherwise null.
 - coinsurancePercent: the percentage as printed for kind "coinsurance" (20 for "20%"), otherwise null.
 - afterDeductible: false if the deductible does not apply to this service, true if the member pays in full until the deductible is met and then the copay or coinsurance applies. Decide from, in order: the cell or its "Limitations" note ("deductible does not apply", "after deductible"); the answer to "Are there services covered before you meet your deductible?"; the chart's general sentence (e.g. "All coinsurance costs shown in this chart are after your deductible has been met"). Use null only for "free", "not_covered", "not_found", or when none of these settle it.
-- If the plan has several in-network tiers (e.g. a preferred tier and a standard network), use the plan's standard in-network tier for every value, and list "deductible.individual" etc. in uncertainFields.
-- uncertain: true if the cell is ambiguous, combines several charges (e.g. "$250 copay then 20% coinsurance"), differs between tiers or settings, or you had to choose between rows. When a cell combines charges, record the first charge the member pays and set uncertain to true.
+- If the plan has several in-network tiers (e.g. the employer's own health system and a broader national network), use the broad standard network tier for every value, never the narrow preferred tier. Record that choice once by listing "deductible.individual" in uncertainFields. Do not mark a service uncertain only because its tiers differ.
+- uncertain: true if the cell is ambiguous, combines several charges (e.g. "$250 copay then 20% coinsurance"), differs between settings within the chosen tier, or you had to choose between rows. When a cell combines charges, record the first charge the member pays and set uncertain to true.
 
 Do not add advice, explanations, or totals.`;
