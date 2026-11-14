@@ -29,6 +29,7 @@ export interface Session {
 }
 
 const KEY = "mediplan.session.v1";
+const CHANGE_EVENT = "mediplan:session-change";
 const EMPTY: Session = {
   plans: [],
   household: null,
@@ -37,31 +38,78 @@ const EMPTY: Session = {
   paid: false,
 };
 
-export function loadSession(): Session {
-  if (typeof window === "undefined") return EMPTY;
+/** Used when the browser blocks storage, so the app still works for this visit. */
+let memoryRaw: string | null = null;
+
+function readRaw(): string | null {
+  if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    return raw ? { ...EMPTY, ...(JSON.parse(raw) as Partial<Session>) } : EMPTY;
+    return window.localStorage.getItem(KEY) ?? memoryRaw;
   } catch {
-    // Private mode or blocked storage: the app still works for this visit.
+    return memoryRaw;
+  }
+}
+
+function parse(raw: string | null): Session {
+  if (!raw) return EMPTY;
+  try {
+    return { ...EMPTY, ...(JSON.parse(raw) as Partial<Session>) };
+  } catch {
     return EMPTY;
   }
 }
 
+let cachedRaw: string | null = null;
+let cachedSession: Session = EMPTY;
+
+/** Same object until the stored session changes, as useSyncExternalStore requires. */
+export function getSessionSnapshot(): Session {
+  const raw = readRaw();
+  if (raw !== cachedRaw) {
+    cachedRaw = raw;
+    cachedSession = parse(raw);
+  }
+  return cachedSession;
+}
+
+/** What the server renders: there is no session on the server. */
+export function getServerSessionSnapshot(): Session {
+  return EMPTY;
+}
+
+/** Notifies on changes from this tab and from other tabs. */
+export function subscribeSession(onChange: () => void): () => void {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(CHANGE_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(CHANGE_EVENT, onChange);
+  };
+}
+
+export function loadSession(): Session {
+  return getSessionSnapshot();
+}
+
 export function saveSession(session: Session): void {
   if (typeof window === "undefined") return;
+  const raw = JSON.stringify(session);
+  memoryRaw = raw;
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(session));
+    window.localStorage.setItem(KEY, raw);
   } catch {
-    // Nothing to do: state stays in memory for this visit.
+    // Storage is blocked: memoryRaw keeps the state for this visit.
   }
+  window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
 export function clearSession(): void {
   if (typeof window === "undefined") return;
+  memoryRaw = null;
   try {
     window.localStorage.removeItem(KEY);
   } catch {
     // Ignore.
   }
+  window.dispatchEvent(new Event(CHANGE_EVENT));
 }

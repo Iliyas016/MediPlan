@@ -79,7 +79,7 @@ export function enumerateArrangements(household: Household, plans: Plan[]): Arra
       const kidsSides: ("A" | "B" | null)[] = hasChildren ? ["A", "B"] : [null];
       for (const kidsOn of kidsSides) {
         const suffix =
-          kidsOn === null ? "" : `, children with ${kidsOn === "A" ? adultA.label : adultB.label}`;
+          kidsOn === null ? "" : `, children on ${kidsOn === "A" ? planA.name : planB.name}`;
         out.push({
           id: `split:${planA.id}+${planB.id}:${kidsOn ?? "none"}`,
           label: `${adultA.label} on ${planA.name}, ${adultB.label} on ${planB.name}${suffix}`,

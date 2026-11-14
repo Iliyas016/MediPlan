@@ -222,11 +222,39 @@ describe("recommend", () => {
     expect(rec.savingsVsWorst).toBeGreaterThan(0);
   });
 
-  it("avoids an option whose emergency the family cannot absorb", () => {
-    const rich = recommend(couple(answered(20000)), plans, REFERENCE_PRICES);
-    const tight = recommend(couple(answered(4500)), plans, REFERENCE_PRICES);
-    expect(tight.best.badYearShock).toBeLessThanOrEqual(4500);
-    expect(tight.best.costs.expected).toBeGreaterThanOrEqual(rich.best.costs.expected);
+  it("never recommends an option that costs more in every scenario", () => {
+    const tight = recommend(couple(answered(500)), plans, REFERENCE_PRICES);
+    for (const other of tight.ranked) {
+      const worseEverywhere =
+        other.costs.good < tight.best.costs.good &&
+        other.costs.expected < tight.best.costs.expected &&
+        other.costs.bad < tight.best.costs.bad;
+      expect(worseEverywhere, `${other.arrangement.label} beats the pick in every year`).toBe(false);
+    }
+  });
+
+  it("trades a cheaper expected year for a smaller emergency the family can afford", () => {
+    // Dearer plan with a low out-of-pocket max: worse in a normal year, better in a bad one.
+    const protective = { ...lowDeductible, id: "ppo-low-max", oopMax: { individual: 3000, family: 6000 } };
+    const single = (savings: number): Household => ({
+      ...couple(answered(savings)),
+      people: [person("Alex", "adultA", [{ service: "specialist", timesPerYear: 2, recurring: true }])],
+    });
+    const rich = recommend(single(100000), [protective, highDeductible], REFERENCE_PRICES);
+    const tight = recommend(single(4000), [protective, highDeductible], REFERENCE_PRICES);
+
+    expect(rich.best.arrangement.id).toBe("all:hdhp");
+    expect(tight.best.arrangement.id).toBe("all:ppo-low-max");
+    expect(tight.best.badYearShock).toBeLessThanOrEqual(4000);
+    expect(tight.best.costs.bad).toBeLessThan(rich.best.costs.bad);
+  });
+
+  it("warns when even the safest sensible option exceeds the savings", () => {
+    const tight = recommend(couple(answered(500)), plans, REFERENCE_PRICES);
+    expect(tight.best.shockAffordable).toBe(false);
+    expect(tight.best.flags).toContainEqual(
+      expect.stringMatching(/^A bad year adds \$[\d,]+ to the expected cost, more than your \$500 in savings\.$/),
+    );
   });
 
   it("reports unanswered fields as assumptions", () => {
@@ -238,6 +266,6 @@ describe("recommend", () => {
     const household = { ...couple(), neededServices: answered(["infertility"]) };
     const excluding = { ...lowDeductible, exclusions: ["Infertility treatment"] };
     const rec = recommend(household, [excluding], REFERENCE_PRICES);
-    expect(rec.best.flags.join(" ")).toContain("infertility");
+    expect(rec.best.flags.join(" ")).toContain("PPO 500 does not cover: Infertility treatment.");
   });
 });

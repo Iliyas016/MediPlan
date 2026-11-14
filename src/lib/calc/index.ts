@@ -70,20 +70,34 @@ function exclusionFlags(arrangement: Arrangement, household: Household): string[
     const needle = need.trim().toLowerCase();
     if (!needle) continue;
     for (const part of arrangement.parts) {
-      if (part.plan.exclusions.some((x) => x.toLowerCase().includes(needle))) {
-        flags.push(`${part.plan.name} excludes "${need}".`);
+      const excluded = part.plan.exclusions.find((x) => x.toLowerCase().includes(needle));
+      if (excluded) {
+        flags.push(`${part.plan.name} does not cover: ${excluded}.`);
       }
     }
   }
   return flags;
 }
 
+const dollars = (amount: number) => `$${Math.round(amount).toLocaleString("en-US")}`;
+
+/** True when `other` costs no more in any scenario and less in at least one. */
+function dominates(other: ArrangementResult, r: ArrangementResult): boolean {
+  const keys = ["good", "expected", "bad"] as const;
+  return (
+    keys.every((k) => other.costs[k] <= r.costs[k]) && keys.some((k) => other.costs[k] < r.costs[k])
+  );
+}
+
 /**
  * Rank every way to cover the household and pick one.
  *
- * Rule: cheapest expected year among arrangements whose bad-year shock the
- * family can absorb from savings. If none is affordable, the arrangement
- * with the cheapest bad year wins and carries a warning.
+ * Rules, in order:
+ * 1. Never recommend an arrangement that another one beats in a good, an
+ *    expected and a bad year alike: it is worse whatever happens.
+ * 2. Among the rest, the cheapest expected year whose bad-year shock the
+ *    family can absorb from savings.
+ * 3. If none is affordable, the one with the cheapest bad year, with a warning.
  */
 export function recommend(household: Household, plans: Plan[], prices: PriceTable): Recommendation {
   const bothEmployersOffered =
@@ -118,7 +132,9 @@ export function recommend(household: Household, plans: Plan[], prices: PriceTabl
     const affordable = savings.status === "unknown" ? true : shock <= savings.value;
     const flags = exclusionFlags(arrangement, household);
     if (!affordable) {
-      flags.push("A bad year would cost more than your emergency savings cover.");
+      flags.push(
+        `A bad year adds ${dollars(shock)} to the expected cost, more than your ${dollars(savings.value)} in savings.`,
+      );
     }
     if (arrangement.singleEmployer && bothEmployersOffered) {
       flags.push("Everyone depends on one job. If it ends, the whole family must switch plans.");
@@ -141,9 +157,10 @@ export function recommend(household: Household, plans: Plan[], prices: PriceTabl
   }
 
   const ranked = [...results].sort((a, b) => a.costs.expected - b.costs.expected);
-  const affordable = ranked.filter((r) => r.shockAffordable);
+  const candidates = ranked.filter((r) => !ranked.some((other) => dominates(other, r)));
   const best =
-    affordable[0] ?? [...ranked].sort((a, b) => a.costs.bad - b.costs.bad)[0];
+    candidates.find((r) => r.shockAffordable) ??
+    [...candidates].sort((a, b) => a.costs.bad - b.costs.bad)[0];
 
   return {
     best,
