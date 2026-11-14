@@ -4,7 +4,7 @@ import { useId, type ReactNode } from "react";
 import type { YesNo } from "./household-draft";
 
 const inputClass =
-  "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base dark:border-zinc-700 dark:bg-zinc-950";
+  "rounded-lg border border-rule-strong bg-surface px-3 py-2 text-base text-ink placeholder:text-ink-faint";
 
 export function NumberField({
   label,
@@ -28,12 +28,12 @@ export function NumberField({
         {label}
       </label>
       {hint && (
-        <p id={`${id}-hint`} className="text-sm text-zinc-500">
+        <p id={`${id}-hint`} className="text-sm text-ink-faint">
           {hint}
         </p>
       )}
       <div className="flex items-center gap-2">
-        {prefix && <span className="text-zinc-500">{prefix}</span>}
+        {prefix && <span className="text-ink-faint">{prefix}</span>}
         <input
           id={id}
           type="number"
@@ -71,7 +71,7 @@ export function TextField({
         {label}
       </label>
       {hint && (
-        <p id={`${id}-hint`} className="text-sm text-zinc-500">
+        <p id={`${id}-hint`} className="text-sm text-ink-faint">
           {hint}
         </p>
       )}
@@ -106,17 +106,17 @@ export function ChoiceField<T extends string>({
   return (
     <fieldset className="space-y-2">
       <legend className="text-sm font-medium">{legend}</legend>
-      {hint && <p className="text-sm text-zinc-500">{hint}</p>}
+      {hint && <p className="text-sm text-ink-faint">{hint}</p>}
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const selected = value === opt.value;
           return (
             <label
               key={opt.value}
-              className={`cursor-pointer rounded-lg border px-4 py-2 text-sm has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-zinc-400 ${
+              className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition-[transform,background-color,border-color] duration-150 ease-out active:scale-[0.97] has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus ${
                 selected
-                  ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-900"
-                  : "border-zinc-300 hover:border-zinc-500 dark:border-zinc-700"
+                  ? "border-ink bg-ink font-semibold text-paper"
+                  : "border-rule-strong bg-surface hover:border-ink"
               }`}
             >
               <input
@@ -159,7 +159,7 @@ export function GateField({
     <div className="space-y-3">
       <ChoiceField legend={legend} hint={hint} value={value} options={YES_NO} onChange={onChange} />
       {value === "yes" && (
-        <div className="space-y-4 border-l-2 border-zinc-200 pl-4 dark:border-zinc-800">{children}</div>
+        <div className="space-y-4 border-l border-rule-strong pl-4">{children}</div>
       )}
     </div>
   );
@@ -180,7 +180,7 @@ export function CheckboxField({
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 size-4 accent-zinc-900 dark:accent-white"
+        className="mt-0.5 size-4 accent-[var(--ink)]"
       />
       <span>{label}</span>
     </label>

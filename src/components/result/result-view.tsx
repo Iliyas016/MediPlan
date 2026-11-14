@@ -1,16 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo } from "react";
 import { recommend, type Recommendation } from "@/lib/calc";
 import { REFERENCE_PRICES } from "@/lib/domain/reference-prices";
 import { formatUsd } from "@/lib/format";
 import type { Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
+import { ButtonLink } from "@/components/ui/button";
 import { AssumptionList } from "./assumption-list";
+import { Coverage } from "./coverage";
 import { OptionList } from "./option-list";
 import { PricingNotes } from "./pricing-notes";
-import { ScenarioCards } from "./scenario-cards";
+import { ScenarioLedger } from "./scenario-ledger";
 
 type Outcome =
   | { kind: "loading" }
@@ -36,7 +37,7 @@ export function ResultView() {
 
   switch (outcome.kind) {
     case "loading":
-      return <p className="text-zinc-500">Calculating…</p>;
+      return <p className="text-ink-faint">Calculating…</p>;
     case "missing-plans":
       return (
         <EmptyState
@@ -59,7 +60,7 @@ export function ResultView() {
       return (
         <EmptyState
           title="None of these plans covers everyone"
-          body="Each way of covering your family needs a premium for the right coverage level, for example employee plus children. Check that the premiums are filled in for every level your employer offers."
+          body="Each way of covering your family needs a premium for the right coverage level, for example employee plus children. Fill in the premiums for every level your employer offers."
           href="/start"
           action="Review premiums"
         />
@@ -71,8 +72,9 @@ export function ResultView() {
 
 function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
   const household = session.household!;
-  const nameOf = (id: string) => {
-    const label = household.people.find((p) => p.id === id)?.label ?? "one of you";
+  const labelOf = (id: string) => household.people.find((p) => p.id === id)?.label ?? "Someone";
+  const inSentence = (id: string) => {
+    const label = labelOf(id);
     return label === "You" ? "you" : label;
   };
   const best = rec.best;
@@ -80,27 +82,29 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
   const providers = household.mustKeepProviders.value;
 
   return (
-    <div className="space-y-10">
-      <section className="space-y-4">
-        <p className="text-sm font-medium uppercase tracking-wide text-zinc-500">Your best option</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-          {best.arrangement.label}
-        </h1>
-        <p className="text-lg text-zinc-700 dark:text-zinc-300">
-          Expected cost next year:{" "}
-          <strong className="font-semibold text-zinc-950 dark:text-white">
-            {formatUsd(best.costs.expected)}
-          </strong>
-          , including {formatUsd(best.premiums)} in premiums.
-        </p>
+    <div className="space-y-12">
+      <section className="space-y-6">
+        <h1 className="text-3xl font-extrabold sm:text-4xl">Your best option</h1>
+        <Coverage arrangement={best.arrangement} labelOf={labelOf} />
+        <div className="space-y-2">
+          <p className="text-lg text-ink-soft">
+            Expected cost next year{" "}
+            <strong className="block text-5xl font-extrabold tracking-tight text-ink tabular-nums">
+              {formatUsd(best.costs.expected)}
+            </strong>
+          </p>
+          <p className="text-ink-soft">
+            Includes {formatUsd(best.premiums)} in premiums, after any employer HSA money.
+          </p>
+        </div>
         {rec.savingsVsWorst > 0 && (
-          <p className="inline-block rounded-lg bg-emerald-50 px-3 py-2 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100">
-            About {formatUsd(rec.savingsVsWorst)} a year less than the most expensive way to cover
-            your family.
+          <p className="text-xl font-semibold">
+            <span className="marker">{formatUsd(rec.savingsVsWorst)} a year less</span> than the most
+            expensive way to cover your family.
           </p>
         )}
         {best !== cheapest && (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="max-w-prose text-ink-soft">
             {cheapest.arrangement.label} is {formatUsd(best.costs.expected - cheapest.costs.expected)}{" "}
             cheaper in an expected year. But a bad year on it would cost{" "}
             {formatUsd(cheapest.costs.bad)}, and the extra {formatUsd(cheapest.badYearShock)} is more
@@ -109,31 +113,24 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
         )}
       </section>
 
-      <ScenarioCards result={best} badYearName={nameOf(best.badYearPersonId)} />
+      <ScenarioLedger result={best} badYearName={inSentence(best.badYearPersonId)} />
 
-      {best.flags.length > 0 && (
-        <section aria-labelledby="flags-title" className="space-y-2">
-          <h2 id="flags-title" className="text-lg font-semibold">
+      {(best.flags.length > 0 || providers.length > 0) && (
+        <section aria-labelledby="enroll-title" className="space-y-3 rounded-xl bg-risk-wash p-5">
+          <h2 id="enroll-title" className="text-lg font-bold">
             Before you enroll
           </h2>
-          <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
+          <ul className="list-disc space-y-1.5 pl-5 marker:text-risk">
             {best.flags.map((flag) => (
               <li key={flag}>{flag}</li>
             ))}
+            {providers.length > 0 && (
+              <li>
+                Prices assume in-network care. Look up {providers.join(", ")} in the provider
+                directory of {best.arrangement.parts.map((p) => p.plan.name).join(" and ")}.
+              </li>
+            )}
           </ul>
-        </section>
-      )}
-
-      {providers.length > 0 && (
-        <section aria-labelledby="network-title" className="space-y-2">
-          <h2 id="network-title" className="text-lg font-semibold">
-            Check your doctors
-          </h2>
-          <p className="text-zinc-700 dark:text-zinc-300">
-            Prices above assume in-network care. Before you enroll, look up{" "}
-            {providers.join(", ")} in the provider directory of{" "}
-            {best.arrangement.parts.map((p) => p.plan.name).join(" and ")}.
-          </p>
         </section>
       )}
 
@@ -143,7 +140,7 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
 
       <PricingNotes />
 
-      <p className="text-sm text-zinc-500">
+      <p className="max-w-prose text-sm text-ink-faint">
         MediPlan compares costs from your plan documents and your answers. It is not insurance or
         medical advice. Confirm your doctors are in network and your prescriptions are on each
         plan&apos;s drug list before you enroll.
@@ -164,15 +161,10 @@ function EmptyState({
   action: string;
 }) {
   return (
-    <section className="space-y-4">
-      <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-      <p className="text-lg text-zinc-600 dark:text-zinc-400">{body}</p>
-      <Link
-        href={href}
-        className="inline-block rounded-lg bg-zinc-900 px-5 py-3 font-medium text-white hover:bg-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
-      >
-        {action}
-      </Link>
+    <section className="space-y-5">
+      <h1 className="text-3xl font-extrabold">{title}</h1>
+      <p className="max-w-prose text-lg text-ink-soft">{body}</p>
+      <ButtonLink href={href}>{action}</ButtonLink>
     </section>
   );
 }

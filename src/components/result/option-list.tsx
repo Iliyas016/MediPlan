@@ -1,40 +1,46 @@
 import type { ArrangementResult } from "@/lib/calc";
 import { formatUsd } from "@/lib/format";
 
-/** Every valid way to cover the family, cheapest expected year first. */
+const columns = "sm:grid sm:grid-cols-[minmax(0,1fr)_7rem_7rem_7rem] sm:items-baseline sm:gap-4";
+
+/** Every valid way to cover the family as ledger rows, cheapest expected year first. */
 export function OptionList({ ranked, bestId }: { ranked: ArrangementResult[]; bestId: string }) {
   return (
     <section aria-labelledby="options-title" className="space-y-3">
-      <h2 id="options-title" className="text-lg font-semibold">
+      <h2 id="options-title" className="text-xl font-bold">
         All {ranked.length} ways to cover your family
       </h2>
-      <ol className="space-y-3">
+      <div
+        aria-hidden
+        className={`hidden border-b border-rule-strong pb-2 text-sm text-ink-faint ${columns}`}
+      >
+        <span>Option</span>
+        <span className="text-right">Expected year</span>
+        <span className="text-right">Bad year</span>
+        <span className="text-right">Premiums</span>
+      </div>
+      <ol className="divide-y divide-rule">
         {ranked.map((r) => {
           const isBest = r.arrangement.id === bestId;
           return (
-            <li
-              key={r.arrangement.id}
-              className={`rounded-xl border p-4 ${
-                isBest
-                  ? "border-emerald-600 dark:border-emerald-500"
-                  : "border-zinc-200 dark:border-zinc-800"
-              }`}
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="font-medium">{r.arrangement.label}</p>
-                {isBest && (
-                  <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-xs font-medium text-white">
-                    Recommended
-                  </span>
-                )}
+            <li key={r.arrangement.id} className="py-4">
+              <div className={columns}>
+                <p className={isBest ? "font-bold" : "font-medium"}>
+                  {r.arrangement.label}
+                  {isBest && (
+                    <span className="ml-2 inline-block rounded-full bg-save-wash px-2 py-0.5 align-middle text-xs font-semibold text-save">
+                      Recommended
+                    </span>
+                  )}
+                </p>
+                <dl className="mt-2 grid grid-cols-3 gap-2 sm:contents">
+                  <Figure label="Expected year" value={r.costs.expected} strong={isBest} />
+                  <Figure label="Bad year" value={r.costs.bad} />
+                  <Figure label="Premiums" value={r.premiums} />
+                </dl>
               </div>
-              <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
-                <Stat label="Expected year" value={r.costs.expected} />
-                <Stat label="Bad year" value={r.costs.bad} />
-                <Stat label="Premiums" value={r.premiums} />
-              </dl>
               {r.flags.length > 0 && (
-                <ul className="mt-3 space-y-1 text-sm text-amber-800 dark:text-amber-300">
+                <ul className="mt-2 space-y-1 text-sm text-risk">
                   {r.flags.map((flag) => (
                     <li key={flag}>{flag}</li>
                   ))}
@@ -48,11 +54,11 @@ export function OptionList({ ranked, bestId }: { ranked: ArrangementResult[]; be
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Figure({ label, value, strong = false }: { label: string; value: number; strong?: boolean }) {
   return (
-    <div>
-      <dt className="text-zinc-500">{label}</dt>
-      <dd className="font-medium tabular-nums">{formatUsd(value)}</dd>
+    <div className="sm:text-right">
+      <dt className="text-xs text-ink-faint sm:sr-only">{label}</dt>
+      <dd className={`tabular-nums ${strong ? "font-bold" : ""}`}>{formatUsd(value)}</dd>
     </div>
   );
 }

@@ -4,16 +4,16 @@ import Link from "next/link";
 export function AssumptionList({ assumptions }: { assumptions: { path: string; note: string }[] }) {
   if (assumptions.length === 0) return null;
   return (
-    <section aria-labelledby="assumptions-title" className="space-y-2">
-      <h2 id="assumptions-title" className="text-lg font-semibold">
+    <section aria-labelledby="assumptions-title" className="space-y-3">
+      <h2 id="assumptions-title" className="text-xl font-bold">
         Based on these assumptions
       </h2>
-      <ul className="list-disc space-y-1 pl-5 text-zinc-700 dark:text-zinc-300">
+      <ul className="max-w-prose list-disc space-y-1.5 pl-5 text-ink-soft">
         {assumptions.map((a) => (
           <li key={a.path}>{a.note}</li>
         ))}
       </ul>
-      <Link href="/profile" className="inline-block font-medium underline underline-offset-4">
+      <Link href="/profile" className="inline-block font-semibold underline">
         Answer these to sharpen the result
       </Link>
     </section>

@@ -36,7 +36,7 @@ MediPlan — веб-продукт для семей в США, которые �
 | --- | --- | --- | --- |
 | Инструмент | Claude Code | Claude Code | ChatGPT |
 | Линия | Расчёт, анкета, вердикт | Извлечение и загрузка | Данные, дизайн, дек |
-| Код | движок, `/profile`, `/result`, трекер года `/year`, лендинг, пример, интеграция | `POST /api/extract`, экран `/start` с проверкой цифр и ручным вводом, пейвол и Stripe в тестовом режиме, деплой | страница `/pricing`, общие компоненты, стили |
+| Код | движок, дизайн-система, `/profile`, `/result`, трекер года `/year`, лендинг, пример, интеграция | `POST /api/extract`, экран `/start` с проверкой цифр и ручным вводом, пейвол и Stripe в тестовом режиме, деплой | страница `/pricing` по дизайн-системе |
 | Данные | | проверка источников и перенос цен в код, замер точности извлечения | реальные SBC, справочные цены со ссылками, бенчмарки подписок, опрос американцев |
 | Питч | текст, выступление, сдача заявки | слайды про рынок и экономику | оформление и сборка дека на английском |
 | Подменяет | Абуку по `/start` | Ильяса по движку и `/result` | проверка продукта на контрольных точках |
@@ -53,9 +53,9 @@ MediPlan — веб-продукт для семей в США, которые �
 
 Чтобы не было конфликтов при слиянии, каждый правит только своё.
 
-- **Ильяс:** `src/app/page.tsx`, `src/app/profile/**`, `src/app/result/**`, `src/app/year/**`, `src/components/profile/**`, `src/components/result/**`, `src/components/year/**`, `src/lib/calc/**`
+- **Ильяс:** `src/app/page.tsx`, `src/app/profile/**`, `src/app/result/**`, `src/app/year/**`, `src/components/profile/**`, `src/components/result/**`, `src/components/year/**`, `src/lib/calc/**`, дизайн-система: `src/components/ui/**`, `src/app/globals.css`, `src/app/layout.tsx`
 - **Абука:** `src/app/api/**`, `src/app/start/**`, `src/components/start/**`, `src/components/paywall/**`, `src/lib/extract/**`, `src/lib/domain/reference-prices.ts`
-- **Борч:** `public/samples/**`, `docs/research/**`, `src/app/pricing/**`, `src/components/ui/**`, `src/app/globals.css`
+- **Борч:** `public/samples/**`, `docs/research/**`, `src/app/pricing/**`
 - **Общее, менять только с предупреждением в чате:** `src/lib/domain/plan.ts`, `src/lib/domain/profile.ts`, `src/lib/store/session.ts`
 
 ### Контракты между линиями

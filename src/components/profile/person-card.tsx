@@ -22,9 +22,9 @@ export function PersonCard({
   return (
     <section
       aria-label={name}
-      className="space-y-5 rounded-xl border border-zinc-200 p-5 dark:border-zinc-800"
+      className="space-y-5 rounded-xl border border-rule bg-surface p-5"
     >
-      <h3 className="text-lg font-semibold">{name}</h3>
+      <h3 className="text-lg font-bold">{name}</h3>
 
       <div className="flex flex-wrap gap-4">
         <TextField
@@ -57,7 +57,7 @@ export function PersonCard({
         value={person.prescriptions}
         onChange={(v) => onChange({ prescriptions: v })}
       >
-        <p className="text-sm text-zinc-500">How many different prescriptions of each kind?</p>
+        <p className="text-sm text-ink-faint">How many different prescriptions of each kind?</p>
         <div className="flex flex-wrap gap-4">
           <NumberField
             label="Generic"
@@ -86,7 +86,7 @@ export function PersonCard({
         value={person.ongoingCare}
         onChange={(v) => onChange({ ongoingCare: v })}
       >
-        <p className="text-sm text-zinc-500">Visits a year for each.</p>
+        <p className="text-sm text-ink-faint">Visits a year for each.</p>
         <div className="flex flex-wrap gap-4">
           <NumberField
             label="Specialist"

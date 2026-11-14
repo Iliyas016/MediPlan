@@ -83,14 +83,39 @@ change them without telling the team first.
 
 - Ilyas: `src/app/page.tsx`, `src/app/profile/**`, `src/app/result/**`,
   `src/app/year/**`, `src/components/profile/**`, `src/components/result/**`,
-  `src/components/year/**`, `src/lib/calc/**`
+  `src/components/year/**`, `src/lib/calc/**`, `src/components/ui/**`,
+  `src/app/globals.css`, `src/app/layout.tsx`, `src/lib/format.ts`
 - Abuka: `src/app/api/**`, `src/app/start/**`, `src/components/start/**`,
   `src/components/paywall/**`, `src/lib/extract/**`,
   `src/lib/domain/reference-prices.ts`
-- Borch: `public/samples/**`, `docs/research/**`, `src/app/pricing/**`,
-  `src/components/ui/**`, `src/app/globals.css`
+- Borch: `public/samples/**`, `docs/research/**`, `src/app/pricing/**`
 - Shared contracts: `src/lib/domain/plan.ts`, `src/lib/domain/profile.ts`,
-  `src/lib/store/session.ts`
+  `src/lib/store/session.ts`, `src/lib/store/use-session.ts`
+
+## Design system
+
+Every screen uses one visual world: open-enrollment paperwork made calm. Ink on
+paper, figures set like a ledger, one highlighter mark per screen on the number
+that matters. Before building UI, read `src/app/globals.css` and copy the
+patterns of `/profile` and `/result`.
+
+- Colors only through tokens: `bg-paper`, `bg-surface`, `text-ink`,
+  `text-ink-soft`, `text-ink-faint`, `border-rule`, `border-rule-strong`,
+  `text-save` / `bg-save-wash` (savings, done), `text-risk` /
+  `bg-risk-wash` (warnings, errors), `bg-ink text-paper` (selected). Never
+  raw Tailwind palette colors (`zinc`, `blue`...) or hex in components.
+  Dark mode comes from the tokens for free.
+- Buttons: `Button` and `ButtonLink` from `src/components/ui/button.tsx`.
+- Type: Public Sans from the layout. Page title `text-3xl font-extrabold
+  sm:text-4xl`, section title `text-xl font-bold`, money `tabular-nums`
+  via `formatUsd` from `src/lib/format.ts`.
+- Pages: `<main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10
+  sm:py-14">`. The header with the 1-2-3 steps comes from the layout.
+- Do not: put a small label or eyebrow above a heading, use emoji as icons,
+  make a colored left border on cards, use gradients, or add entrance
+  animations. Lists of figures are ledger rows with dividers, not grids of
+  identical cards.
+- The `.marker` class is the highlighter. At most one per screen.
 
 ## Working rules
 

@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
+/*
+ * MediPlan visual world: the open-enrollment paperwork on the kitchen table,
+ * made calm. Ink on paper, figures set like a ledger, and one highlighter
+ * mark per screen on the number the family should take away.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #f7f8f6;
+  --surface: #ffffff;
+  --ink: #16304f;
+  --ink-soft: #3e5470;
+  --ink-faint: #5a6b82;
+  --rule: #d9dee4;
+  --rule-strong: #7f8d9f;
+  --save: #1d7a4c;
+  --save-wash: #e6f2ea;
+  --risk: #a3560a;
+  --risk-wash: #fbf0e1;
+  --highlight: #e4f49b;
+  --on-highlight: #16304f;
+  --focus: #2f6fd6;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0e1826;
+    --surface: #15233a;
+    --ink: #e8eef5;
+    --ink-soft: #b5c2d2;
+    --ink-faint: #93a2b5;
+    --rule: #26364d;
+    --rule-strong: #6a7c95;
+    --save: #74d6a2;
+    --save-wash: #12301f;
+    --risk: #f2b266;
+    --risk-wash: #33230c;
+    --highlight: #4f5f10;
+    --on-highlight: #f2f9cf;
+    --focus: #7da7f0;
+    color-scheme: dark;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-save: var(--save);
+  --color-save-wash: var(--save-wash);
+  --color-risk: var(--risk);
+  --color-risk-wash: var(--risk-wash);
+  --color-highlight: var(--highlight);
+  --color-on-highlight: var(--on-highlight);
+  --color-focus: var(--focus);
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--highlight);
+    color: var(--on-highlight);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  html {
+    scrollbar-color: var(--rule-strong) var(--paper);
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* The highlighter stroke across the one figure that matters. */
+.marker {
+  color: var(--on-highlight);
+  background-image: linear-gradient(
+    transparent 14%,
+    var(--highlight) 14%,
+    var(--highlight) 90%,
+    transparent 90%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  padding-inline: 0.15em;
+  margin-inline: -0.15em;
+  box-decoration-break: clone;
+  animation: marker-draw 700ms var(--ease-out-expo) 200ms both;
+}
+
+@keyframes marker-draw {
+  from {
+    background-size: 0% 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marker {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }

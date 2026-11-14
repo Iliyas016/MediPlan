@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useState, type FormEvent } from "react";
 import { saveSession, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
+import { Button } from "@/components/ui/button";
 import { CheckboxField, ChoiceField, NumberField } from "./fields";
 import {
   activePeople,
@@ -38,7 +39,7 @@ function saveDraft(draft: HouseholdDraft): void {
 
 export function ProfileForm() {
   const session = useSession();
-  if (!session) return <p className="text-zinc-500">Loading…</p>;
+  if (!session) return <p className="text-ink-faint">Loading…</p>;
   return <ProfileFormLoaded session={session} />;
 }
 
@@ -81,18 +82,17 @@ function ProfileFormLoaded({ session }: { session: Session }) {
   return (
     <form onSubmit={submit} className="space-y-10">
       <header className="space-y-3">
-        <p className="text-sm font-medium uppercase tracking-wide text-zinc-500">Step 2 of 3</p>
-        <h1 className="text-3xl font-semibold tracking-tight">Tell us about your family</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">
+        <h1 className="text-3xl font-extrabold sm:text-4xl">Tell us about your family</h1>
+        <p className="max-w-prose text-lg text-ink-soft">
           The cheapest plan depends on how much care your family uses. Skip anything you are not
           sure about: we will use a typical value and show it next to your result.
         </p>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-ink-faint">
           Your answers stay in this browser. We ask how much care you expect, never about
           diagnoses.
         </p>
         {session.plans.length === 0 && (
-          <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100">
+          <p className="rounded-lg bg-risk-wash px-4 py-3 text-sm">
             You have not added any plans yet.{" "}
             <Link href="/start" className="font-medium underline underline-offset-4">
               Add your plans
@@ -103,7 +103,7 @@ function ProfileFormLoaded({ session }: { session: Session }) {
       </header>
 
       <section aria-labelledby="who-title" className="space-y-5">
-        <h2 id="who-title" className="text-xl font-semibold">
+        <h2 id="who-title" className="text-xl font-bold">
           Who needs coverage?
         </h2>
         <ChoiceField
@@ -116,7 +116,7 @@ function ProfileFormLoaded({ session }: { session: Session }) {
           onChange={(v) => update({ hasPartner: v === "couple" })}
         />
         {hasPartnerPlans && !draft.hasPartner && (
-          <p className="text-sm text-amber-800 dark:text-amber-300">
+          <p className="text-sm text-risk">
             You added plans from your partner&apos;s employer. Include your partner to compare
             them.
           </p>
@@ -129,7 +129,7 @@ function ProfileFormLoaded({ session }: { session: Session }) {
             id={childCountId}
             value={draft.children.length}
             onChange={(e) => update({ children: resizeChildren(draft.children, Number(e.target.value)) })}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base dark:border-zinc-700 dark:bg-zinc-950"
+            className="rounded-lg border border-rule-strong bg-surface px-3 py-2 text-base text-ink placeholder:text-ink-faint"
           >
             {Array.from({ length: 9 }, (_, n) => (
               <option key={n} value={n}>
@@ -142,10 +142,10 @@ function ProfileFormLoaded({ session }: { session: Session }) {
 
       <section aria-labelledby="care-title" className="space-y-5">
         <div className="space-y-1">
-          <h2 id="care-title" className="text-xl font-semibold">
+          <h2 id="care-title" className="text-xl font-bold">
             Care you expect next year
           </h2>
-          <p className="text-sm text-zinc-500">A rough guess is fine. Last year is a good guide.</p>
+          <p className="text-sm text-ink-faint">A rough guess is fine. Last year is a good guide.</p>
         </div>
         {activePeople(draft).map(({ person, fallbackName }) => (
           <PersonCard
@@ -158,7 +158,7 @@ function ProfileFormLoaded({ session }: { session: Session }) {
       </section>
 
       <section aria-labelledby="money-title" className="space-y-5">
-        <h2 id="money-title" className="text-xl font-semibold">
+        <h2 id="money-title" className="text-xl font-bold">
           If something goes wrong
         </h2>
         <NumberField
@@ -172,10 +172,10 @@ function ProfileFormLoaded({ session }: { session: Session }) {
 
       <section aria-labelledby="services-title" className="space-y-4">
         <div className="space-y-1">
-          <h2 id="services-title" className="text-xl font-semibold">
+          <h2 id="services-title" className="text-xl font-bold">
             Will anyone need any of these?
           </h2>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-ink-faint">
             Many plans do not cover them. We check each plan&apos;s list of excluded services.
           </p>
         </div>
@@ -197,10 +197,10 @@ function ProfileFormLoaded({ session }: { session: Session }) {
       </section>
 
       <section aria-labelledby="doctors-title" className="space-y-3">
-        <h2 id="doctors-title" className="text-xl font-semibold">
+        <h2 id="doctors-title" className="text-xl font-bold">
           Doctors you want to keep
         </h2>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-ink-faint">
           Plans only pay their prices inside their network. We will remind you which directories to
           check.
         </p>
@@ -211,7 +211,7 @@ function ProfileFormLoaded({ session }: { session: Session }) {
           placeholder="For example: Dr. Lee, Children's Hospital"
           onChange={(e) => update({ providers: e.target.value })}
           rows={3}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+          className="w-full rounded-lg border border-rule-strong bg-surface px-3 py-2 text-base text-ink placeholder:text-ink-faint disabled:opacity-50"
         />
         <CheckboxField
           label="No specific doctors"
@@ -220,12 +220,9 @@ function ProfileFormLoaded({ session }: { session: Session }) {
         />
       </section>
 
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-zinc-900 px-5 py-3 font-medium text-white hover:bg-zinc-700 sm:w-auto dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
-      >
+      <Button type="submit" className="w-full sm:w-auto">
         See my best option
-      </button>
+      </Button>
     </form>
   );
 }
