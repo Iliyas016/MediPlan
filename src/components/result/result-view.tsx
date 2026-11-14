@@ -1,12 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { recommend, type Recommendation } from "@/lib/calc";
 import { REFERENCE_PRICES } from "@/lib/domain/reference-prices";
 import { formatUsd } from "@/lib/format";
-import type { Session } from "@/lib/store/session";
+import { saveSession, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
-import { ButtonLink } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { AssumptionList } from "./assumption-list";
 import { Coverage } from "./coverage";
 import { OptionList } from "./option-list";
@@ -71,6 +72,7 @@ export function ResultView() {
 }
 
 function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
+  const router = useRouter();
   const household = session.household!;
   const labelOf = (id: string) => household.people.find((p) => p.id === id)?.label ?? "Someone";
   const inSentence = (id: string) => {
@@ -111,6 +113,17 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
             than your savings cover. This option keeps a bad year at {formatUsd(best.costs.bad)}.
           </p>
         )}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+          <Button
+            onClick={() => {
+              saveSession({ ...session, chosenArrangementId: best.arrangement.id });
+              router.push("/year");
+            }}
+          >
+            Enroll in this and track my year
+          </Button>
+          <p className="text-sm text-ink-soft">Check every medical bill against your plan.</p>
+        </div>
       </section>
 
       <ScenarioLedger result={best} badYearName={inSentence(best.badYearPersonId)} />
