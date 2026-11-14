@@ -94,7 +94,7 @@ export function PlanForm({
                 <span className="rounded-full bg-highlight px-2 py-0.5 text-xs font-semibold tracking-wide text-on-highlight uppercase">
                   Sample
                 </span>
-                <span>Real plan document from {sample}, read live. Premiums from the employer&apos;s rate table.</span>
+                <span>Real plan document from {sample}, read live. Premiums from the employer’s rate table.</span>
               </>
             ) : (
               <span className="break-all">{draft.source ? `Read from ${draft.source}` : "Entered by hand"}</span>

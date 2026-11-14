@@ -113,7 +113,7 @@ export function ChoiceField<T extends string>({
           return (
             <label
               key={opt.value}
-              className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition-[transform,background-color,border-color] duration-150 ease-out active:scale-[0.97] has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus ${
+              className={`inline-flex min-h-11 cursor-pointer items-center rounded-lg border px-4 py-2 text-sm transition-[transform,background-color,border-color] duration-150 ease-out active:scale-[0.97] has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus ${
                 selected
                   ? "border-ink bg-ink font-semibold text-paper"
                   : "border-rule-strong bg-surface hover:border-ink"

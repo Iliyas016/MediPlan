@@ -85,7 +85,7 @@ export function BillForm({ people, onAdd }: { people: Person[]; onAdd: (entry: L
             Allowed amount
           </label>
           <p id={`${id}-allowed-hint`} className={hintClass}>
-            On your insurer&apos;s Explanation of Benefits, often called &ldquo;allowed&rdquo; or
+            On your insurer’s Explanation of Benefits, often called &ldquo;allowed&rdquo; or
             &ldquo;plan discount price&rdquo;.
           </p>
           <MoneyInput id={`${id}-allowed`} hintId={`${id}-allowed-hint`} value={allowed} onChange={setAllowed} />
@@ -95,7 +95,7 @@ export function BillForm({ people, onAdd }: { people: Person[]; onAdd: (entry: L
             Amount the provider is asking (optional)
           </label>
           <p id={`${id}-billed-hint`} className={hintClass}>
-            From the provider&apos;s bill. We check it against your plan&apos;s share.
+            From the provider’s bill. We check it against your plan’s share.
           </p>
           <MoneyInput id={`${id}-billed`} hintId={`${id}-billed-hint`} value={billed} onChange={setBilled} />
         </div>

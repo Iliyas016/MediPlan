@@ -17,9 +17,16 @@ export function SiteHeader() {
 
   return (
     <header className="border-b border-rule">
+      <a
+        href="#main"
+        className="sr-only rounded-md bg-ink px-4 py-2 font-semibold text-paper focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-10"
+      >
+        Skip to content
+      </a>
       <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4">
         <Link
           href="/"
+          translate="no"
           className="flex items-center gap-2 text-lg font-extrabold tracking-tight no-underline"
         >
           <BrandMark className="h-5 w-auto" />

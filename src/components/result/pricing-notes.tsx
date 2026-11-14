@@ -21,7 +21,7 @@ export function PricingNotes() {
           Deductibles and coinsurance apply to the price your insurer has agreed with in-network
           providers. We use a typical agreed price for each service from published claims research.
           Where we found no reliable public figure, the price is our estimate and marked as such.
-          Your plan&apos;s prices may differ.
+          Your plan’s prices may differ.
         </p>
         <table className="w-full text-sm">
           <thead>

@@ -117,7 +117,7 @@ function ProfileFormLoaded({ session }: { session: Session }) {
         />
         {hasPartnerPlans && !draft.hasPartner && (
           <p className="text-sm text-risk">
-            You added plans from your partner&apos;s employer. Include your partner to compare
+            You added plans from your partner’s employer. Include your partner to compare
             them.
           </p>
         )}
@@ -176,7 +176,7 @@ function ProfileFormLoaded({ session }: { session: Session }) {
             Will anyone need any of these?
           </h2>
           <p className="text-sm text-ink-faint">
-            Many plans do not cover them. We check each plan&apos;s list of excluded services.
+            Many plans do not cover them. We check each plan’s list of excluded services.
           </p>
         </div>
         <div className="space-y-2">

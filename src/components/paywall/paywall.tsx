@@ -259,7 +259,7 @@ function TestCard() {
     <div className="space-y-2 rounded-lg border border-dashed border-rule-strong px-4 py-3 text-sm">
       <p className="font-semibold">Test mode: no real money is charged</p>
       <p>
-        Pay with Stripe&apos;s test card{" "}
+        Pay with Stripe’s test card{" "}
         <span className="font-semibold whitespace-nowrap tabular-nums">{TEST_CARD.number}</span>,{" "}
         {TEST_CARD.expiry}, {TEST_CARD.cvc}, {TEST_CARD.zip}.
       </p>

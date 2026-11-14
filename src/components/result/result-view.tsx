@@ -163,7 +163,7 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
       <p className="max-w-prose text-sm text-ink-faint">
         MediPlan compares costs from your plan documents and your answers. It is not insurance or
         medical advice. Confirm your doctors are in network and your prescriptions are on each
-        plan&apos;s drug list before you enroll.
+        plan’s drug list before you enroll.
       </p>
     </div>
   );

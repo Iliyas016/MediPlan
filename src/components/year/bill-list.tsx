@@ -41,13 +41,17 @@ export function BillList({
           {overbilled > 0 && (
             <p className="text-sm text-risk">
               Billed {formatUsd(entry.billed ?? 0)}, which is {formatUsd(overbilled)} more than your
-              plan&apos;s share. Ask the provider for an itemized bill and compare it with your
-              insurer&apos;s Explanation of Benefits before you pay.
+              plan’s share. Ask the provider for an itemized bill and compare it with your
+              insurer’s Explanation of Benefits before you pay.
             </p>
           )}
           <button
             type="button"
-            onClick={() => onRemove(entry.id)}
+            onClick={() => {
+              if (window.confirm(`Remove the ${SERVICE_LABELS[entry.service].toLowerCase()} bill from your log?`)) {
+                onRemove(entry.id);
+              }
+            }}
             className="cursor-pointer text-sm text-ink-faint underline hover:text-ink"
           >
             Remove

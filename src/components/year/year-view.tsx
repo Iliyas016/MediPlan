@@ -145,7 +145,7 @@ function Tracker({ session, arrangement }: { session: Session; arrangement: Arra
         {overbilled > 0 && (
           <p className="text-xl font-semibold">
             <span className="marker">{formatUsd(overbilled)} may be overcharged.</span> The bills
-            marked below ask for more than your plan&apos;s share.
+            marked below ask for more than your plan’s share.
           </p>
         )}
       </section>

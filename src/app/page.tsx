@@ -22,7 +22,7 @@ const STEPS = [
 
 export default function Home() {
   return (
-    <main className="flex-1">
+    <main id="main" className="flex-1">
       <div className="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:pt-16">
         <ElectionSheet />
       </div>
@@ -74,9 +74,9 @@ export default function Home() {
             Built for families with two jobs
           </h2>
           <p className="max-w-prose text-lg text-ink-soft">
-            Your employer&apos;s benefits tool only knows its own plans. With two employers you
+            Your employer’s benefits tool only knows its own plans. With two employers you
             have two menus and several ways to combine them: everyone on yours, everyone on your
-            partner&apos;s, each of you on your own, the children on either side. MediPlan prices
+            partner’s, each of you on your own, the children on either side. MediPlan prices
             all of them in one place.
           </p>
           <ul className="grid gap-x-10 gap-y-5 sm:grid-cols-2">
@@ -85,7 +85,7 @@ export default function Home() {
               year your savings could not cover.
             </Point>
             <Point title="What your plan will not pay for">
-              Each plan&apos;s excluded services are checked against what your family needs, like
+              Each plan’s excluded services are checked against what your family needs, like
               fertility treatment or hearing aids.
             </Point>
             <Point title="Every number traceable">
@@ -93,7 +93,7 @@ export default function Home() {
               see how the answer was reached.
             </Point>
             <Point title="Your answers stay with you">
-              No sign-up. Your family&apos;s answers are kept in this browser, not on our servers.
+              No sign-up. Your family’s answers are kept in this browser, not on our servers.
             </Point>
           </ul>
         </div>

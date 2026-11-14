@@ -24,7 +24,7 @@ export function ElectionSheet() {
         Which health plan should cover each person in your family?
       </h1>
       <p className="mt-5 max-w-prose text-lg text-ink-soft">
-        Upload the plan summaries from your job and your partner&apos;s. MediPlan prices every way
+        Upload the plan summaries from your job and your partner’s. MediPlan prices every way
         to split your family across them, for a normal year and a bad one, and fills in the
         answer.
       </p>
