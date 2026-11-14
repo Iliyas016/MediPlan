@@ -84,7 +84,9 @@ export function PlanForm({
   const errorCount = errors ? Object.keys(errors).length : 0;
 
   return (
-    <details open className="group rounded-xl border border-rule bg-surface">
+    // Samples start folded so the page stays short on a phone; the summary
+    // already says what they are and how many fields to check.
+    <details open={!sample} className="group rounded-xl border border-rule bg-surface">
       <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-4 py-4 sm:px-5">
         <span className="min-w-0 space-y-1">
           <span className="block text-lg font-bold break-words">{draft.name.trim() || "New plan"}</span>

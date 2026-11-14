@@ -52,7 +52,7 @@ export function BillList({
                 onRemove(entry.id);
               }
             }}
-            className="cursor-pointer text-sm text-ink-faint underline hover:text-ink"
+            className="cursor-pointer py-3 text-sm text-ink-faint underline hover:text-ink"
           >
             Remove
           </button>

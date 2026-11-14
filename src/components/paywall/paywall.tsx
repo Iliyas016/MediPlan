@@ -266,7 +266,7 @@ function TestCard() {
       <button
         type="button"
         onClick={copy}
-        className="cursor-pointer font-medium underline underline-offset-4"
+        className="cursor-pointer py-3 font-medium underline underline-offset-4"
       >
         {copied ? "Card number copied" : "Copy card number"}
       </button>

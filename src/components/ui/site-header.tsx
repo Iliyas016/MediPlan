@@ -27,7 +27,7 @@ export function SiteHeader() {
         <Link
           href="/"
           translate="no"
-          className="flex items-center gap-2 text-lg font-extrabold tracking-tight no-underline"
+          className="flex items-center gap-2 py-2 text-lg font-extrabold tracking-tight no-underline"
         >
           <BrandMark className="h-5 w-auto" />
           MediPlan
