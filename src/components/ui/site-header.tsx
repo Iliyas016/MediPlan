@@ -16,7 +16,9 @@ export function SiteHeader() {
   const current = STEPS.findIndex((s) => pathname.startsWith(s.href));
 
   return (
-    <header className="border-b border-rule">
+    // Frosted glass: the page scrolls under the header, so the steps stay in
+    // reach on long screens. Opaque enough that text on it keeps its contrast.
+    <header className="sticky top-0 z-20 border-b border-rule bg-paper/85 backdrop-blur-md backdrop-saturate-150">
       <a
         href="#main"
         className="sr-only rounded-md bg-ink px-4 py-2 font-semibold text-paper focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-10"

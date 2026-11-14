@@ -9,6 +9,8 @@ import { formatUsd } from "@/lib/format";
 import { saveSession, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { CountUp } from "@/components/ui/count-up";
+import { stagger } from "@/components/ui/motion";
 import { PaidGate } from "@/components/paywall/paywall";
 import { AssumptionList } from "./assumption-list";
 import { Coverage } from "./coverage";
@@ -101,13 +103,17 @@ function Verdict({
   return (
     <div className="space-y-12">
       <section className="space-y-6">
-        <h1 className="text-3xl font-extrabold sm:text-4xl">Your best option</h1>
-        <Coverage arrangement={best.arrangement} labelOf={labelOf} />
-        <div className="space-y-2">
+        <h1 style={stagger(0)} className="enter text-3xl font-extrabold sm:text-4xl">
+          Your best option
+        </h1>
+        <div style={stagger(1)} className="enter">
+          <Coverage arrangement={best.arrangement} labelOf={labelOf} />
+        </div>
+        <div style={stagger(2)} className="enter space-y-2">
           <p className="text-lg text-ink-soft">
             Expected cost next year{" "}
-            <strong className="block text-5xl font-extrabold tracking-tight text-ink tabular-nums">
-              {formatUsd(best.costs.expected)}
+            <strong className="block text-5xl font-extrabold tracking-tight text-ink">
+              <CountUp value={best.costs.expected} format={formatUsd} />
             </strong>
           </p>
           <p className="text-ink-soft">
@@ -115,7 +121,7 @@ function Verdict({
           </p>
         </div>
         {rec.savingsVsWorst > 0 && (
-          <p className="text-xl font-semibold">
+          <p style={stagger(3)} className="enter text-xl font-semibold">
             <span className="marker">{formatUsd(rec.savingsVsWorst)} a year less</span> than the most
             expensive way to cover your family.
           </p>
@@ -128,7 +134,7 @@ function Verdict({
             than your savings cover. This option keeps a bad year at {formatUsd(best.costs.bad)}.
           </p>
         )}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+        <div style={stagger(4)} className="enter flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
           <Button
             onClick={() => {
               saveSession({ ...session, chosenArrangementId: best.arrangement.id });

@@ -69,6 +69,7 @@
     font-family: var(--font-sans);
     font-feature-settings: "kern", "liga";
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -121,7 +122,7 @@
   padding-inline: 0.15em;
   margin-inline: -0.15em;
   box-decoration-break: clone;
-  animation: marker-draw 700ms var(--ease-out-expo) 200ms both;
+  animation: marker-draw 700ms var(--ease-out-expo) 450ms both;
 }
 
 @keyframes marker-draw {
@@ -130,8 +131,56 @@
   }
 }
 
+/*
+ * Motion. Entrances are one-shot keyframes on mount: opacity, a small rise
+ * and a blur that clears. Each element's place in the sequence comes from
+ * --i (see stagger() in src/components/ui/motion.ts). Only transform,
+ * opacity and filter move, so nothing reflows.
+ */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+}
+
+.enter {
+  animation: enter 560ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* A ruled answer line drawn left to right, like a pen across a form. */
+@keyframes draw-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.draw {
+  transform-origin: left;
+  animation: draw-line 800ms var(--ease-out-expo) both;
+  animation-delay: calc(300ms + var(--i, 0) * 110ms);
+}
+
+/* Progress fills grow from empty to their value. */
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.grow {
+  transform-origin: left;
+  animation: grow 900ms var(--ease-out-expo) both;
+  animation-delay: calc(200ms + var(--i, 0) * 80ms);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marker {
+  .marker,
+  .enter,
+  .draw,
+  .grow {
     animation: none;
   }
 

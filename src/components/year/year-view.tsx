@@ -8,6 +8,7 @@ import { formatUsd } from "@/lib/format";
 import { saveSession, type LedgerEntry, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { stagger } from "@/components/ui/motion";
 import { PaidGate } from "@/components/paywall/paywall";
 import { Coverage } from "@/components/result/coverage";
 import { BillForm } from "./bill-form";
@@ -128,8 +129,12 @@ function Tracker({ session, arrangement }: { session: Session; arrangement: Arra
   return (
     <div className="space-y-12">
       <section className="space-y-5">
-        <h1 className="text-3xl font-extrabold sm:text-4xl">Your {year} plan year</h1>
-        <Coverage arrangement={arrangement} labelOf={labelOf} />
+        <h1 style={stagger(0)} className="enter text-3xl font-extrabold sm:text-4xl">
+          Your {year} plan year
+        </h1>
+        <div style={stagger(1)} className="enter">
+          <Coverage arrangement={arrangement} labelOf={labelOf} />
+        </div>
         <p className="text-lg text-ink-soft">
           {status.entries.length === 0 ? (
             "No bills logged yet. Add each one as it arrives and we will check it against your plan."

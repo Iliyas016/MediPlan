@@ -62,7 +62,7 @@ function Meter({ label, progress, doneText }: { label: string; progress: Progres
         className="h-2.5 overflow-hidden rounded-full bg-rule"
       >
         <div
-          className={`h-full rounded-full transition-[width] duration-500 ease-out ${done ? "bg-save" : "bg-ink"}`}
+          className={`grow h-full rounded-full transition-[width] duration-500 ease-out ${done ? "bg-save" : "bg-ink"}`}
           style={{ width: `${share * 100}%` }}
         />
       </div>

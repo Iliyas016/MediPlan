@@ -112,10 +112,14 @@ patterns of `/profile` and `/result`.
 - Pages: `<main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10
   sm:py-14">`. The header with the 1-2-3 steps comes from the layout.
 - Do not: put a small label or eyebrow above a heading, use emoji as icons,
-  make a colored left border on cards, use gradients, or add entrance
-  animations. Lists of figures are ledger rows with dividers, not grids of
-  identical cards.
+  make a colored left border on cards, or use gradients. Lists of figures
+  are ledger rows with dividers, not grids of identical cards.
 - The `.marker` class is the highlighter. At most one per screen.
+- Motion: only the top of a screen enters, through the `.enter`, `.draw`
+  and `.grow` classes in `globals.css`, ordered with `stagger(i)` from
+  `src/components/ui/motion.ts`. The headline figure may use `CountUp`.
+  Animate only transform, opacity and filter; reduced motion turns it off.
+  No animation libraries, no motion on lists further down the page.
 
 ## Working rules
 
