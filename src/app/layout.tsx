@@ -15,12 +15,10 @@ export const metadata: Metadata = {
   description: "Compare employer health plans for your family, for a normal year and a bad one.",
 };
 
-/** Browser chrome matches the page in both themes (tokens in globals.css). */
+/** Browser chrome follows the light paper token in globals.css. */
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f8f6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e1826" },
-  ],
+  themeColor: "#f7f7f8",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

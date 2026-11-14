@@ -1,6 +1,7 @@
 import { ButtonLink } from "@/components/ui/button";
 import { stagger } from "@/components/ui/motion";
 import { YearComparison } from "@/components/landing/year-comparison";
+import { HeroOrnaments } from "@/components/landing/hero-ornaments";
 
 const STEPS = [
   { title: "Add your plans", body: "Upload the PDFs from both jobs, or try samples." },
@@ -11,7 +12,8 @@ const STEPS = [
 export default function Home() {
   return (
     <main id="main" className="flex-1">
-      <section aria-labelledby="hero-title" className="mx-auto w-full max-w-3xl px-4 pt-14 pb-14 sm:pt-24">
+      <section aria-labelledby="hero-title" className="landing-hero mx-auto w-full max-w-3xl px-4 pt-14 pb-14 sm:pt-24">
+        <HeroOrnaments />
         <p style={stagger(0)} className="enter text-sm font-semibold text-ink-soft">
           Open enrollment: your choice locks in for a year
         </p>

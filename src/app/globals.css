@@ -1,46 +1,27 @@
 @import "tailwindcss";
 
 /*
- * MediPlan visual world: the open-enrollment paperwork on the kitchen table,
- * made calm. Ink on paper, figures set like a ledger, and one highlighter
- * mark per screen on the number the family should take away.
+ * A light graphite palette: white surfaces, quiet grey paper and semantic
+ * color for savings and warnings. The presentation stays light in every OS theme.
  */
 :root {
-  --paper: #f7f8f6;
+  --paper: #f7f7f8;
   --surface: #ffffff;
-  --ink: #16304f;
-  --ink-soft: #3e5470;
-  --ink-faint: #5a6b82;
-  --rule: #d9dee4;
-  --rule-strong: #7f8d9f;
-  --save: #1d7a4c;
-  --save-wash: #e6f2ea;
-  --risk: #a3560a;
-  --risk-wash: #fbf0e1;
-  --highlight: #e4f49b;
-  --on-highlight: #16304f;
-  --focus: #2f6fd6;
+  --ink: #262629;
+  --ink-soft: #505057;
+  --ink-faint: #696971;
+  --rule: #e3e3e7;
+  --rule-strong: #898992;
+  --save: #24734f;
+  --save-wash: #edf6f0;
+  --risk: #96551b;
+  --risk-wash: #fff5ea;
+  --highlight: #e8edda;
+  --on-highlight: #30372b;
+  --focus: #55555f;
+  --shadow-panel: 0 1px 2px rgb(26 26 30 / 0.025),
+    0 12px 32px -20px rgb(26 26 30 / 0.16);
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0e1826;
-    --surface: #15233a;
-    --ink: #e8eef5;
-    --ink-soft: #b5c2d2;
-    --ink-faint: #93a2b5;
-    --rule: #26364d;
-    --rule-strong: #6a7c95;
-    --save: #74d6a2;
-    --save-wash: #12301f;
-    --risk: #f2b266;
-    --risk-wash: #33230c;
-    --highlight: #4f5f10;
-    --on-highlight: #f2f9cf;
-    --focus: #7da7f0;
-    color-scheme: dark;
-  }
 }
 
 @theme inline {
@@ -60,6 +41,7 @@
   --color-focus: var(--focus);
   --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius-xl: 1rem;
 }
 
 @layer base {
@@ -76,7 +58,11 @@
   h2,
   h3 {
     text-wrap: balance;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+  }
+
+  h1 {
+    letter-spacing: -0.04em;
   }
 
   p {
@@ -105,6 +91,310 @@
 
   a {
     text-underline-offset: 0.2em;
+  }
+}
+
+/* Surface treatments use existing containers, without changing their layout. */
+body > header {
+  background-color: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 2px 12px rgb(26 26 30 / 0.025);
+}
+
+body > header nav a[aria-current="step"] {
+  background-color: var(--paper);
+}
+
+#main:has(> [aria-labelledby="hero-title"]) {
+  background-color: var(--surface);
+  overflow-x: clip;
+}
+
+#main > [aria-labelledby="how-title"],
+#main > footer {
+  background-color: var(--paper);
+}
+
+#main :where(.rounded-xl.border.bg-surface) {
+  box-shadow: var(--shadow-panel);
+}
+
+#main :where(details.rounded-xl.bg-surface) > summary {
+  border-radius: inherit;
+}
+
+#main :where(details.rounded-xl.bg-surface[open]) > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+@media (hover: hover) {
+  #main :where(details.rounded-xl.bg-surface) > summary:hover {
+    background-color: var(--paper);
+  }
+}
+
+/* Keep the existing controls comfortable and within narrow phone screens. */
+@media (max-width: 639px), (hover: none) and (pointer: coarse) {
+  body > header nav[aria-label="Steps"] ol,
+  body > header nav[aria-label="Steps"] li {
+    gap: 0;
+  }
+
+  body > header nav[aria-label="Steps"] li > span {
+    width: 0.5rem;
+    margin-inline: 0.125rem;
+  }
+
+  body > header nav[aria-label="Steps"] a,
+  #main button {
+    min-height: 44px;
+  }
+
+  #main button.underline {
+    min-width: 44px;
+  }
+
+  #main :where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea) {
+    min-width: 0;
+  }
+}
+
+/*
+ * The hero art has its own space on small screens and moves into the side
+ * margins on wide screens. Its entrance settles; further motion follows input.
+ */
+.landing-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-art {
+  position: relative;
+  height: 170px;
+  margin-bottom: 24px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-art__object {
+  position: absolute;
+  width: var(--size);
+  color: var(--ink-faint);
+  transform: translate3d(
+    calc(var(--scene-x, 0px) * var(--depth, 1)),
+    calc(var(--scene-y, 0px) * var(--depth, 1)),
+    0
+  );
+  transition: transform 650ms var(--ease-out-expo);
+}
+
+.hero-art__float {
+  transform: rotate(var(--tilt, 0deg));
+  animation: hero-art-float 4600ms var(--ease-out-expo) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.hero-art__spin {
+  transform: rotate(var(--scene-angle, 0deg));
+  transition: transform 800ms var(--ease-out-expo);
+}
+
+.hero-art__drawing {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-art__paper {
+  fill: var(--surface);
+}
+
+.hero-art__accent {
+  fill: var(--highlight);
+  stroke: var(--rule-strong);
+}
+
+.hero-art__solid {
+  fill: var(--ink);
+  stroke: var(--ink);
+}
+
+.hero-art__shine {
+  stroke: var(--rule);
+  stroke-width: 3;
+}
+
+.hero-art__instrument {
+  filter: drop-shadow(0 12px 10px color-mix(in srgb, var(--ink) 10%, transparent));
+}
+
+.hero-art__object--pill-left {
+  --size: 140px;
+  --depth: -0.7;
+  left: 0;
+  top: 16px;
+}
+
+.hero-art__object--syringe-left {
+  --size: 94px;
+  --depth: -0.8;
+  --tilt: 24deg;
+  --delay: 200ms;
+  left: calc(50% - 42px);
+  top: 0;
+}
+
+.hero-art__object--pill-right {
+  --size: 84px;
+  --depth: 0;
+  --tilt: 65deg;
+  --delay: 180ms;
+  /* Center the pill between the two syringe centers. */
+  left: calc(75% - 67.5px);
+  right: auto;
+  top: 82px;
+}
+
+.hero-art__object--syringe-right {
+  --size: 112px;
+  --depth: 0.8;
+  --tilt: -28deg;
+  --delay: 120ms;
+  right: 0;
+  top: -12px;
+}
+
+.hero-art__object--capsule,
+.hero-art__object--cross {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .hero-art {
+    height: 190px;
+  }
+
+  .hero-art__object--pill-left {
+    --size: 176px;
+    left: 4%;
+    top: 0;
+  }
+
+  .hero-art__object--syringe-left {
+    --size: 116px;
+    left: 33%;
+    top: 10px;
+  }
+
+  .hero-art__object--pill-right {
+    --size: 112px;
+    left: calc(66.5% - 63px);
+    top: 65px;
+  }
+
+  .hero-art__object--syringe-right {
+    --size: 144px;
+    right: 0;
+    top: -12px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-art {
+    position: absolute;
+    z-index: -1;
+    inset: 0 auto 0 50%;
+    width: 100vw;
+    height: 100%;
+    margin: 0;
+    transform: translateX(-50%);
+    overflow: clip;
+  }
+
+  .hero-art__object--pill-left {
+    --size: 204px;
+    left: calc(50% - 605px);
+    top: 220px;
+  }
+
+  .hero-art__object--syringe-left {
+    --size: 158px;
+    left: calc(50% - 555px);
+    top: 48px;
+  }
+
+  .hero-art__object--pill-right {
+    --size: 176px;
+    --depth: 0.6;
+    left: calc(50% + 420px);
+    right: auto;
+    top: 64px;
+  }
+
+  .hero-art__object--syringe-right {
+    --size: 146px;
+    left: calc(50% + 435px);
+    right: auto;
+    top: 280px;
+  }
+
+  .hero-art__object--capsule {
+    display: block;
+    --size: 84px;
+    --depth: 1;
+    --tilt: -8deg;
+    --delay: 160ms;
+    left: calc(50% - 500px);
+    bottom: 38px;
+  }
+
+  .hero-art__object--cross {
+    display: block;
+    --size: 76px;
+    --depth: -0.5;
+    --tilt: 12deg;
+    --delay: 200ms;
+    left: calc(50% + 418px);
+    bottom: 28px;
+  }
+}
+
+@media (max-width: 639px) {
+  .landing-hero {
+    padding-top: 24px;
+  }
+}
+
+@keyframes hero-art-float {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) rotate(calc(var(--tilt, 0deg) - 12deg));
+  }
+  35% {
+    opacity: 1;
+    transform: translate3d(0, -8px, 0) rotate(calc(var(--tilt, 0deg) + 4deg));
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-art__object,
+  .hero-art__spin {
+    transform: none;
+    transition: none;
+  }
+
+  .hero-art__float {
+    animation: none;
   }
 }
 
