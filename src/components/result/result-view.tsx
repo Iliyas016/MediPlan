@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { recommend, type Recommendation } from "@/lib/calc";
+import { findDecisiveAssumptions } from "@/lib/calc/sensitivity";
 import { REFERENCE_PRICES } from "@/lib/domain/reference-prices";
 import { formatUsd } from "@/lib/format";
 import { saveSession, type Session } from "@/lib/store/session";
@@ -20,14 +21,19 @@ type Outcome =
   | { kind: "missing-plans" }
   | { kind: "missing-profile" }
   | { kind: "no-valid-option" }
-  | { kind: "ready"; session: Session; rec: Recommendation };
+  | { kind: "ready"; session: Session; rec: Recommendation; decisive: Set<string> };
 
 function evaluate(session: Session | null): Outcome {
   if (!session) return { kind: "loading" };
   if (session.plans.length === 0) return { kind: "missing-plans" };
   if (!session.household) return { kind: "missing-profile" };
   try {
-    return { kind: "ready", session, rec: recommend(session.household, session.plans, REFERENCE_PRICES) };
+    return {
+      kind: "ready",
+      session,
+      rec: recommend(session.household, session.plans, REFERENCE_PRICES),
+      decisive: findDecisiveAssumptions(session.household, session.plans, REFERENCE_PRICES),
+    };
   } catch {
     return { kind: "no-valid-option" };
   }
@@ -68,11 +74,19 @@ export function ResultView() {
         />
       );
     case "ready":
-      return <Verdict session={outcome.session} rec={outcome.rec} />;
+      return <Verdict session={outcome.session} rec={outcome.rec} decisive={outcome.decisive} />;
   }
 }
 
-function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
+function Verdict({
+  session,
+  rec,
+  decisive,
+}: {
+  session: Session;
+  rec: Recommendation;
+  decisive: Set<string>;
+}) {
   const router = useRouter();
   const household = session.household!;
   const labelOf = (id: string) => household.people.find((p) => p.id === id)?.label ?? "Someone";
@@ -156,7 +170,7 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
         </div>
       </PaidGate>
 
-      <AssumptionList assumptions={rec.assumptions} />
+      <AssumptionList assumptions={rec.assumptions} decisive={decisive} />
 
       <PricingNotes />
 

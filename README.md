@@ -56,6 +56,9 @@ The model only reads documents. Every decision is plain, tested TypeScript.
    - `index.ts`: never recommends an option another one beats in every
      scenario, then picks the cheapest expected year whose bad-year shock the
      family's savings can absorb.
+   - `sensitivity.ts`: re-runs the pick with each unanswered question pushed
+     to its extremes and marks the assumptions that could change the
+     recommendation, so the family knows which questions matter.
    - `year.ts`: replays logged bills through the same tracker to show what the
      family owes, flag overcharges and price the next visit.
 4. **Pay** (`src/app/api/checkout`). A $49/year Stripe Checkout in test mode;
@@ -70,7 +73,7 @@ The model only reads documents. Every decision is plain, tested TypeScript.
   `docs/research/prices.md`.
 - **Samples**: sources and premiums for every sample document:
   `public/samples/SOURCES.md`.
-- **Tests**: 57 unit tests on the engine, tracker, questionnaire, calendar,
+- **Tests**: 60 unit tests on the engine, tracker, questionnaire, calendar,
   extraction normalizer and checkout (`npm test`).
 
 ## Screens
