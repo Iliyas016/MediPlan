@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { CheckboxField, GateField, NumberField, TextField } from "./fields";
 import type { PersonDraft } from "./household-draft";
 
@@ -18,23 +19,37 @@ export function PersonCard({
   const subject = person.role === "adultA" && !person.name.trim() ? "you" : name;
   const does = subject === "you" ? "do you" : `does ${subject}`;
   const will = subject === "you" ? "you" : subject;
+  const [showAbout, setShowAbout] = useState(Boolean(person.name || person.age));
 
   return (
     <section
       aria-label={name}
       className="space-y-5 rounded-xl border border-rule bg-surface p-5"
     >
-      <h3 className="text-lg font-bold">{name}</h3>
-
-      <div className="flex flex-wrap gap-4">
-        <TextField
-          label="Name (optional)"
-          value={person.name}
-          placeholder={fallbackName}
-          onChange={(v) => onChange({ name: v })}
-        />
-        <NumberField label="Age" value={person.age} onChange={(v) => onChange({ age: v })} />
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 className="text-lg font-bold">{name}</h3>
+        {!showAbout && (
+          <button
+            type="button"
+            onClick={() => setShowAbout(true)}
+            className="cursor-pointer text-sm text-ink-soft underline underline-offset-4"
+          >
+            Add a name and age
+          </button>
+        )}
       </div>
+
+      {showAbout && (
+        <div className="flex flex-wrap gap-4">
+          <TextField
+            label="Name (optional)"
+            value={person.name}
+            placeholder={fallbackName}
+            onChange={(v) => onChange({ name: v })}
+          />
+          <NumberField label="Age" value={person.age} onChange={(v) => onChange({ age: v })} />
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-4">
         <NumberField
