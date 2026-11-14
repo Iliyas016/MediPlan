@@ -25,4 +25,15 @@ Duke, whose deductible is $0).
   the review screen and the user confirms them before any calculation.
 - The Kentucky plan has three in-network tiers, so most rows were flagged.
   The prompt was then changed to flag the tier choice once instead of every
-  row; see the git history of `src/lib/extract/prompt.ts`.
+  row (`src/lib/extract/prompt.ts`).
+
+## After the tier change (same day, same documents)
+
+| Document | Read in | Checked values correct | Fields flagged |
+| --- | --- | --- | --- |
+| IU Anthem PPO $500 | 15.8 s | 6 of 6 | 4 (prescription tiers) |
+| IU Anthem PPO HDHP | 13.2 s | 6 of 6 | 0 |
+| Pittsburgh Panther HDHP | 14.4 s | 6 of 6 | 4 |
+| Kentucky UK-PPO | 15.9 s | 6 of 6 | 6, down from 20 |
+| Duke Plus PPO | 16.9 s | 6 of 6 | 4, down from 8 |
+| **Total** | 13–17 s | **30 of 30** | 18, down from 37 |
