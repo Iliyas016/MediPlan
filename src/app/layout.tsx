@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: "Compare employer health plans for your family, for a normal year and a bad one.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${publicSans.variable} h-full`}>
       <body className="flex min-h-full flex-col">
