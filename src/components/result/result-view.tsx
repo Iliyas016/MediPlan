@@ -176,9 +176,10 @@ function Verdict({
         </div>
       </PaidGate>
 
-      <AssumptionList assumptions={rec.assumptions} decisive={decisive} />
-
-      <PricingNotes />
+      <div className="space-y-3">
+        <AssumptionList assumptions={rec.assumptions} decisive={decisive} />
+        <PricingNotes />
+      </div>
 
       <p className="max-w-prose text-sm text-ink-faint">
         MediPlan compares costs from your plan documents and your answers. It is not insurance or
