@@ -20,6 +20,9 @@ export interface ReferencePrice {
 
 const HCCI_PRIMARY_CARE = "https://healthcostinstitute.org/all-hcci-reports/trends-in-primary-care-visits/";
 const HCCI_IMAGING = "https://healthcostinstitute.org/wp-content/uploads/2026/03/Imaging-Brief_Final.pdf";
+const FAIR_HEALTH_2023 =
+  "https://www.prnewswire.com/news-releases/retail-clinic-and-urgent-care-center-utilization-each-decreased-12-percent-nationally-from-2022-to-2023-according-to-eighth-annual-fair-health-report-302408848.html";
+const HCCI_2011 = "https://healthcostinstitute.org/wp-content/uploads/images/pdfs/2011-HCCI-Annual-Report.pdf";
 const KFF_COMMON_SERVICES =
   "https://www.healthsystemtracker.org/chart-collection/how-costly-are-common-health-services-in-the-united-states/";
 
@@ -39,9 +42,8 @@ export const REFERENCE_PRICES: Record<ServiceKey, ReferencePrice> = {
   specialist: {
     allowed: 183,
     unit: "visit",
-    source:
-      "https://prnewswire.com/news-releases/retail-clinic-utilization-increased-202-percent-nationally-from-2021-to-2022-according-to-seventh-annual-fair-health-report-302094264.html",
-    measured: "Median allowed amount, new-patient office visit of 45 to 59 minutes (CPT 99204), 2022 (FAIR Health).",
+    source: FAIR_HEALTH_2023,
+    measured: "Median allowed amount, new-patient office visit of 45 to 59 minutes (CPT 99204) in physician offices, 2023 (FAIR Health).",
   },
   diagnosticTest: {
     allowed: 61,
@@ -55,11 +57,26 @@ export const REFERENCE_PRICES: Record<ServiceKey, ReferencePrice> = {
     source: KFF_COMMON_SERVICES,
     measured: "Average outpatient lower-back MRI, large employer plans, 2018 (Peterson-KFF).",
   },
-  genericDrug: { allowed: 20, unit: "30-day fill", source: null, measured: null },
-  preferredBrandDrug: { allowed: 250, unit: "30-day fill", source: null, measured: null },
+  genericDrug: {
+    allowed: 33,
+    unit: "prescription",
+    source: HCCI_2011,
+    measured: "Average generic prescription price, commercially insured, 2011 (HCCI). The newest per-prescription figure we found.",
+  },
+  preferredBrandDrug: {
+    allowed: 268,
+    unit: "prescription",
+    source: HCCI_2011,
+    measured: "Average brand-name prescription price, commercially insured, 2011 (HCCI). The newest per-prescription figure we found.",
+  },
   nonPreferredDrug: { allowed: 500, unit: "30-day fill", source: null, measured: null },
   specialtyDrug: { allowed: 4000, unit: "30-day fill", source: null, measured: null },
-  urgentCare: { allowed: 200, unit: "visit", source: null, measured: null },
+  urgentCare: {
+    allowed: 179,
+    unit: "visit",
+    source: FAIR_HEALTH_2023,
+    measured: "Median allowed amount, new-patient visit of 45 to 59 minutes (CPT 99204) at urgent care centers, 2023 (FAIR Health).",
+  },
   emergencyRoom: {
     allowed: 2453,
     unit: "visit",

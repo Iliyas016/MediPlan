@@ -65,7 +65,7 @@ The model only reads documents. Every decision is plain, tested TypeScript.
 
 - **Extraction**: 30 of 30 hand-checked key values correct across five real
   SBCs, 13 to 17 s per document. Details: `docs/research/extraction.md`.
-- **Prices**: 10 of 17 service prices cite Peterson-KFF, HCCI or FAIR Health
+- **Prices**: 13 of 17 service prices cite Peterson-KFF, HCCI or FAIR Health
   claims research; the rest are labelled "Estimate" in the product. Details:
   `docs/research/prices.md`.
 - **Samples**: sources and premiums for every sample document:
