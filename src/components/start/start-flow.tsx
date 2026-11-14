@@ -16,6 +16,8 @@ import {
   emptyPlanDraft,
   type Employer,
   type FieldPath,
+  sampleLabel,
+  SAMPLE_SOURCE_PREFIX,
   type PlanDraft,
 } from "./plan-draft";
 import { EMPLOYER_LABELS, PlanForm } from "./plan-form";
@@ -87,8 +89,7 @@ async function readFile(id: string, employer: Employer, file: File): Promise<Ite
   }
 }
 
-const SAMPLE_SOURCE = "sample SBC";
-const isSample = (item: Item) => item.status === "ready" && item.draft.source?.startsWith(SAMPLE_SOURCE) === true;
+const isSample = (item: Item) => item.status === "ready" && sampleLabel(item.draft.source) !== null;
 
 /**
  * A sample goes through the same /api/extract as an upload. Only the premiums,
@@ -112,7 +113,7 @@ async function readSample(id: string, sample: SamplePlan): Promise<Item> {
     status: "ready",
     draft: {
       ...item.draft,
-      source: `${SAMPLE_SOURCE}: ${sample.label}`,
+      source: `${SAMPLE_SOURCE_PREFIX}${sample.label}`,
       premiums,
       paychecksPerYear: "12",
     },

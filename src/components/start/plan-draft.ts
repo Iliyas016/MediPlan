@@ -51,6 +51,13 @@ export interface PlanDraft {
   warnings: WarningPath[];
 }
 
+/** `source` of a plan read from one of the built-in sample SBCs. */
+export const SAMPLE_SOURCE_PREFIX = "sample SBC: ";
+
+/** The sample's label, or null for a user's own upload or manual entry. */
+export const sampleLabel = (source: string | null): string | null =>
+  source?.startsWith(SAMPLE_SOURCE_PREFIX) ? source.slice(SAMPLE_SOURCE_PREFIX.length) : null;
+
 export type FieldPath =
   | WarningPath
   | "premiums"

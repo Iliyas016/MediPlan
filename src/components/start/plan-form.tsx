@@ -6,6 +6,7 @@ import type { WarningPath } from "@/lib/extract/schema";
 import { SERVICE_LABELS } from "@/lib/format";
 import { AmountField, FieldNote, inputClass, SelectField, TextField, type FieldState } from "./fields";
 import {
+  sampleLabel,
   withoutWarning,
   type Employer,
   type FieldPath,
@@ -79,30 +80,38 @@ export function PlanForm({
     set(`services.${key}`, { services: { ...draft.services, [key]: { ...draft.services[key], ...patch } } });
 
   const toCheck = draft.warnings.length;
+  const sample = sampleLabel(draft.source);
   const errorCount = errors ? Object.keys(errors).length : 0;
 
   return (
     <details open className="group rounded-xl border border-rule bg-surface">
-      <summary className="flex cursor-pointer list-none flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-4 py-4 sm:px-5">
-        <span className="min-w-0">
+      <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-4 py-4 sm:px-5">
+        <span className="min-w-0 space-y-1">
           <span className="block text-lg font-bold break-words">{draft.name.trim() || "New plan"}</span>
-          <span className="block text-sm text-ink-faint break-all">
-            {draft.source ? `Read from ${draft.source}` : "Entered by hand"}
+          <span className="flex flex-wrap items-center gap-2 text-sm text-ink-faint">
+            {sample ? (
+              <>
+                <span className="rounded-full bg-highlight px-2 py-0.5 text-xs font-semibold tracking-wide text-on-highlight uppercase">
+                  Sample
+                </span>
+                <span>Real plan document from {sample}, read live. Premiums from the employer&apos;s rate table.</span>
+              </>
+            ) : (
+              <span className="break-all">{draft.source ? `Read from ${draft.source}` : "Entered by hand"}</span>
+            )}
           </span>
-        </span>
-        <span className="text-sm">
           {errorCount > 0 ? (
-            <span className="font-medium text-risk">
+            <span className="block text-sm font-medium text-risk">
               {errorCount} {errorCount === 1 ? "answer" : "answers"} missing
             </span>
           ) : toCheck > 0 ? (
-            <span className="text-risk">
+            <span className="block text-sm text-risk">
               {toCheck} {toCheck === 1 ? "field" : "fields"} to check
             </span>
           ) : null}
-          <span aria-hidden className="ml-3 inline-block text-ink-faint transition-transform group-open:rotate-180">
-            ▾
-          </span>
+        </span>
+        <span aria-hidden className="pt-1 text-xl leading-none text-ink-faint transition-transform group-open:rotate-180">
+          ▾
         </span>
       </summary>
 

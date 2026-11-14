@@ -146,7 +146,10 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
         </section>
       )}
 
-      <PaidGate returnPath="/result">
+      <PaidGate
+        returnPath="/result"
+        teaser={`We priced ${rec.ranked.length} ${rec.ranked.length === 1 ? "way" : "ways"} to cover your family. See each one side by side, and what a bad year would cost on every plan.`}
+      >
         <div className="space-y-12">
           <ScenarioLedger result={best} badYearName={inSentence(best.badYearPersonId)} />
           <OptionList ranked={rec.ranked} bestId={best.arrangement.id} />

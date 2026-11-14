@@ -44,7 +44,11 @@ export function YearView() {
     );
   }
   return (
-    <PaidGate returnPath="/year">
+    <PaidGate
+      returnPath="/year"
+      title="Track your plan year"
+      teaser="Log each medical bill, watch your progress toward the deductible and the out-of-pocket limit, and get the key dates of your plan year."
+    >
       {arrangement ? (
         <Tracker session={session} arrangement={arrangement} />
       ) : (
