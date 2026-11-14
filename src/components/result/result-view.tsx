@@ -8,6 +8,7 @@ import { formatUsd } from "@/lib/format";
 import { saveSession, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { PaidGate } from "@/components/paywall/paywall";
 import { AssumptionList } from "./assumption-list";
 import { Coverage } from "./coverage";
 import { OptionList } from "./option-list";
@@ -126,8 +127,6 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
         </div>
       </section>
 
-      <ScenarioLedger result={best} badYearName={inSentence(best.badYearPersonId)} />
-
       {(best.flags.length > 0 || providers.length > 0) && (
         <section aria-labelledby="enroll-title" className="space-y-3 rounded-xl bg-risk-wash p-5">
           <h2 id="enroll-title" className="text-lg font-bold">
@@ -147,7 +146,12 @@ function Verdict({ session, rec }: { session: Session; rec: Recommendation }) {
         </section>
       )}
 
-      <OptionList ranked={rec.ranked} bestId={best.arrangement.id} />
+      <PaidGate returnPath="/result">
+        <div className="space-y-12">
+          <ScenarioLedger result={best} badYearName={inSentence(best.badYearPersonId)} />
+          <OptionList ranked={rec.ranked} bestId={best.arrangement.id} />
+        </div>
+      </PaidGate>
 
       <AssumptionList assumptions={rec.assumptions} />
 

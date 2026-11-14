@@ -8,6 +8,7 @@ import { formatUsd } from "@/lib/format";
 import { saveSession, type LedgerEntry, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { PaidGate } from "@/components/paywall/paywall";
 import { Coverage } from "@/components/result/coverage";
 import { BillForm } from "./bill-form";
 import { BillList } from "./bill-list";
@@ -42,8 +43,15 @@ export function YearView() {
       </section>
     );
   }
-  if (!arrangement) return <ChooseArrangement session={session} />;
-  return <Tracker session={session} arrangement={arrangement} />;
+  return (
+    <PaidGate returnPath="/year">
+      {arrangement ? (
+        <Tracker session={session} arrangement={arrangement} />
+      ) : (
+        <ChooseArrangement session={session} />
+      )}
+    </PaidGate>
+  );
 }
 
 function ChooseArrangement({ session }: { session: Session }) {

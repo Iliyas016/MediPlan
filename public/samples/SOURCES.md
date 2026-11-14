@@ -26,3 +26,18 @@ Values are "one person / family".
 - Kentucky: https://hr.uky.edu/sites/default/files/sbc-ppo-2026.pdf
 - Indiana PPO $500: https://hr.iu.edu/_docs/benefits-pubs/anthem-ppo500-sbc-2026.pdf
 - Indiana PPO HDHP: https://hr.iu.edu/_docs/benefits-pubs/anthem-ppo-hdhp-sbc-2026.pdf
+
+## Premiums used by "Try with sample plans"
+
+SBCs do not include premiums. The sample flow fills them in from each
+employer's published rate table (`src/lib/samples.ts`), monthly, employee's
+share:
+
+| Plan | Employee | + children | + spouse | Family | Source |
+| --- | --- | --- | --- | --- | --- |
+| IU Anthem PPO $500 | $170.33 | $306.58 | $586.78 | $708.55 | [IU 2027 premiums, salary band below $41,510](https://hr.iu.edu/open-enrollment/premiums/index.html) |
+| IU Anthem PPO HDHP | $48.54 | $87.35 | $167.21 | $201.90 | same |
+| UK-PPO | $107 | $253 | $508 | $727 | [UK 2026-2027 PPO](https://hr.uky.edu/insurance-and-retirement/health-insurance-and-benefits/ppo) |
+
+IU publishes 2027 rates next to 2026 plan documents, so the sample pairs a
+2026 SBC with 2027 premiums. Employer HSA contributions are left at $0.

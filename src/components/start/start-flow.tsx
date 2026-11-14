@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { ExtractedPlanSchema, type Plan } from "@/lib/domain/plan";
 import { MAX_PDF_BYTES } from "@/lib/extract/limits";
+import { SAMPLE_PLANS, type SamplePlan } from "@/lib/samples";
 import type { WarningPath } from "@/lib/extract/schema";
 import { saveSession, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
@@ -86,6 +87,52 @@ async function readFile(id: string, employer: Employer, file: File): Promise<Ite
   }
 }
 
+const SAMPLE_SOURCE = "sample SBC";
+const isSample = (item: Item) => item.status === "ready" && item.draft.source?.startsWith(SAMPLE_SOURCE) === true;
+
+/**
+ * A sample goes through the same /api/extract as an upload. Only the premiums,
+ * which no SBC contains, come from the employer's published rate table.
+ */
+async function readSample(id: string, sample: SamplePlan): Promise<Item> {
+  let file: File;
+  try {
+    const response = await fetch(`/samples/${sample.file}`);
+    if (!response.ok) throw new Error(String(response.status));
+    file = new File([await response.blob()], sample.file, { type: "application/pdf" });
+  } catch {
+    return { status: "failed", id, employer: sample.employer, fileName: sample.label, message: READ_FAILED };
+  }
+  const item = await readFile(id, sample.employer, file);
+  if (item.status !== "ready") return { ...item, fileName: sample.label };
+  const premiums = Object.fromEntries(
+    Object.entries(sample.monthlyPremiums).map(([tier, amount]) => [tier, String(amount)]),
+  ) as PlanDraft["premiums"];
+  return {
+    status: "ready",
+    draft: {
+      ...item.draft,
+      source: `${SAMPLE_SOURCE}: ${sample.label}`,
+      premiums,
+      paychecksPerYear: "12",
+    },
+  };
+}
+
+/** Replaces any earlier sample plans with a fresh read of every sample. */
+function loadSamples(setItems: Dispatch<SetStateAction<Item[]>>): void {
+  const jobs = SAMPLE_PLANS.map((sample) => ({ sample, id: crypto.randomUUID() }));
+  setItems((list) => [
+    ...list.filter((item) => !isSample(item)),
+    ...jobs.map(({ sample, id }): Item => ({ status: "reading", id, employer: sample.employer, fileName: sample.label })),
+  ]);
+  for (const { sample, id } of jobs) {
+    void readSample(id, sample).then((item) =>
+      setItems((list) => list.map((existing) => (itemId(existing) === id ? item : existing))),
+    );
+  }
+}
+
 export function StartFlow() {
   const session = useSession();
   if (!session) return <p className="text-ink-faint">Loading…</p>;
@@ -104,6 +151,16 @@ function StartFlowLoaded({ session }: { session: Session }) {
   useEffect(() => {
     saveDrafts(items.flatMap((item) => (item.status === "ready" ? [item.draft] : [])));
   }, [items]);
+
+  // The landing page links here with ?sample=1. Dropping the parameter first
+  // keeps a remount from loading the samples twice.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("sample") !== "1") return;
+    url.searchParams.delete("sample");
+    window.history.replaceState(window.history.state, "", url.pathname + url.search);
+    loadSamples(setItems);
+  }, []);
 
   const replace = (id: string, next: Item | null) =>
     setItems((list) => list.flatMap((item) => (itemId(item) === id ? (next ? [next] : []) : [item])));
@@ -165,6 +222,14 @@ function StartFlowLoaded({ session }: { session: Session }) {
         <p className="text-sm text-ink-faint">
           MediPlan does not keep your files. The numbers you confirm stay in this browser.
         </p>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-dashed border-rule-strong px-4 py-3">
+          <p className="text-sm text-ink-soft">
+            No benefits packet at hand? Try real plans from two university employers.
+          </p>
+          <Button type="button" variant="secondary" onClick={() => loadSamples(setItems)} disabled={reading}>
+            Try with sample plans
+          </Button>
+        </div>
       </header>
 
       <div ref={listRef} className="space-y-10">

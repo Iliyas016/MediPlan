@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandMark } from "./brand-mark";
 
 const STEPS = [
   { href: "/start", label: "Plans" },
@@ -17,7 +18,11 @@ export function SiteHeader() {
   return (
     <header className="border-b border-rule">
       <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4">
-        <Link href="/" className="text-lg font-extrabold tracking-tight no-underline">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-lg font-extrabold tracking-tight no-underline"
+        >
+          <BrandMark className="h-5 w-auto" />
           MediPlan
         </Link>
         {current >= 0 && (

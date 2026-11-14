@@ -41,10 +41,16 @@ export function ElectionSheet() {
         ))}
       </dl>
 
-      <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+      <div className="mt-8 flex flex-wrap items-center gap-3">
         <ButtonLink href="/start">Fill this in with MediPlan</ButtonLink>
-        <p className="text-sm text-ink-soft">About five minutes. No sign-up.</p>
+        <ButtonLink href="/start?sample=1" variant="secondary">
+          Try with sample plans
+        </ButtonLink>
       </div>
+      <p className="mt-3 text-sm text-ink-soft">
+        About five minutes. No sign-up. The samples are real plan documents from two university
+        employers.
+      </p>
     </section>
   );
 }
