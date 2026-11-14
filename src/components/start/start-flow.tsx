@@ -200,7 +200,6 @@ function StartFlowLoaded({ session }: { session: Session }) {
       );
       requestAnimationFrame(() => {
         const first = listRef.current?.querySelector<HTMLElement>("[data-field-error]");
-        first?.closest("details")?.setAttribute("open", "");
         first?.scrollIntoView({ behavior: "smooth", block: "center" });
         first?.querySelector<HTMLElement>("input, select, textarea")?.focus({ preventScroll: true });
       });
@@ -213,23 +212,17 @@ function StartFlowLoaded({ session }: { session: Session }) {
 
   return (
     <div className="space-y-10">
-      <header className="space-y-3">
+      <header className="space-y-4">
         <h1 className="text-3xl font-extrabold sm:text-4xl">Add your health plans</h1>
         <p className="max-w-prose text-lg text-ink-soft">
-          Upload the Summary of Benefits and Coverage (SBC) for each plan you can choose from. We read
-          the numbers, you check them and add the premiums from your enrollment guide. No file? Enter
-          a plan by hand.
+          Upload each plan’s summary (the SBC PDF). We read it, you check a few numbers and add your
+          premium. Files are not stored.
         </p>
-        <p className="text-sm text-ink-faint">
-          MediPlan does not keep your files. The numbers you confirm stay in this browser.
-        </p>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-dashed border-rule-strong px-4 py-3">
-          <p className="text-sm text-ink-soft">
-            No benefits packet at hand? Try real plans from two university employers.
-          </p>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <Button type="button" variant="secondary" onClick={() => loadSamples(setItems)} disabled={reading}>
             Try with sample plans
           </Button>
+          <p className="text-sm text-ink-faint">No packet at hand? Real plans from two universities.</p>
         </div>
       </header>
 
@@ -303,8 +296,8 @@ function EmployerSection({
         </h2>
         <p className="text-sm text-ink-faint">
           {employer === "A"
-            ? "Every plan your employer offers you this year."
-            : "If your spouse or partner can get coverage at work, add those plans too. We will price every way to split the family."}
+            ? "Every plan your employer offers you."
+            : "Add these too and we price every way to split the family."}
         </p>
       </div>
 
