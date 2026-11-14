@@ -60,10 +60,12 @@ describe("toExtractedPlan", () => {
   });
 
   it("flags missing values and fills placeholders that still pass the schema", () => {
-    const { plan, warnings } = toExtractedPlan(
+    const { plan, warnings, missing } = toExtractedPlan(
       modelAnswer({ name: " ", planType: null, deductibleFamily: null, deductibleEmbedded: null }),
       "acme-sbc",
     );
+
+    expect(missing).toEqual(warnings);
 
     expect(plan.name).toBe("acme-sbc");
     expect(plan.planType).toBe("OTHER");
@@ -73,7 +75,7 @@ describe("toExtractedPlan", () => {
   });
 
   it("flags uncertain, missing and incomplete services", () => {
-    const { plan, warnings } = toExtractedPlan(
+    const { plan, warnings, missing } = toExtractedPlan(
       modelAnswer({}, {
         emergencyRoom: { ...coinsurance20, asWritten: "$250 copay then 20% coinsurance", uncertain: true },
         ambulance: { ...coinsurance20, asWritten: "", kind: "not_found", coinsurancePercent: null },
@@ -83,6 +85,7 @@ describe("toExtractedPlan", () => {
     );
 
     expect(warnings).toEqual(["services.urgentCare", "services.emergencyRoom", "services.ambulance"]);
+    expect(missing).toEqual(["services.urgentCare", "services.ambulance"]);
     expect(plan.services.ambulance).toEqual({ kind: "not_covered" });
     expect(ExtractedPlanSchema.safeParse(plan).success).toBe(true);
   });
@@ -115,8 +118,9 @@ describe("toExtractedPlan", () => {
   });
 
   it("keeps the model's own uncertain fields", () => {
-    const { warnings } = toExtractedPlan(modelAnswer({ uncertainFields: ["hsaEligible"] }), "file");
+    const { warnings, missing } = toExtractedPlan(modelAnswer({ uncertainFields: ["hsaEligible"] }), "file");
     expect(warnings).toEqual(["hsaEligible"]);
+    expect(missing).toEqual([]);
   });
 });
 

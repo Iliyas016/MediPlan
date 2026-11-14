@@ -1,25 +1,25 @@
 import { ExtractedPlanSchema } from "@/lib/domain/plan";
+import { MAX_PDF_BYTES } from "@/lib/extract/limits";
 import { toExtractedPlan } from "@/lib/extract/normalize";
 import { ExtractError, readPlanFromPdf } from "@/lib/extract/openai";
 
 /**
  * POST /api/extract
  *
- * Request:  multipart/form-data with one field `file` (an SBC PDF, max 10 MB).
- * Response: 200 { plan: ExtractedPlan, warnings: WarningPath[] }
+ * Request:  multipart/form-data with one field `file` (an SBC PDF, max 4 MB).
+ * Response: 200 { plan: ExtractedPlan, warnings: WarningPath[], missing: WarningPath[] }
  *           4xx/5xx { error: string, message: string }
  *
  * `warnings` lists ExtractedPlan field paths ("deductible.family",
  * "services.imaging", ...) that the document did not contain or the model was
- * unsure about. Those fields hold a placeholder and must be confirmed by the
- * user on the review screen.
+ * unsure about; the user confirms them on the review screen. `missing` is the
+ * subset the document had no value for: `plan` holds a placeholder there, and
+ * the review screen leaves those inputs empty for the user to fill in.
  *
  * The model only reads numbers out of the document. All cost math lives in
  * src/lib/calc and never touches the model.
  */
 export const maxDuration = 120;
-
-const MAX_BYTES = 10 * 1024 * 1024;
 
 const fail = (status: number, error: string, message: string) =>
   Response.json({ error, message }, { status });
@@ -41,8 +41,8 @@ export async function POST(request: Request) {
   if (file.type !== "application/pdf") {
     return fail(415, "unsupported_file", "Only PDF files are supported.");
   }
-  if (file.size > MAX_BYTES) {
-    return fail(413, "file_too_large", "The PDF must be 10 MB or smaller.");
+  if (file.size > MAX_PDF_BYTES) {
+    return fail(413, "file_too_large", "The PDF must be 4 MB or smaller. Enter the numbers by hand instead.");
   }
   if (!process.env.OPENAI_API_KEY) {
     return fail(
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { plan, warnings } = toExtractedPlan(raw, file.name.replace(/\.pdf$/i, ""));
+  const { plan, warnings, missing } = toExtractedPlan(raw, file.name.replace(/\.pdf$/i, ""));
   const checked = ExtractedPlanSchema.safeParse(plan);
   if (!checked.success) {
     return fail(
@@ -80,5 +80,5 @@ export async function POST(request: Request) {
     );
   }
 
-  return Response.json({ plan: checked.data, warnings });
+  return Response.json({ plan: checked.data, warnings, missing });
 }
