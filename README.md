@@ -32,8 +32,25 @@ Built in 24 hours for BUSINESS CUP 2.0 (Money track).
    - `scenarios.ts` builds a good, an expected and a bad year. The bad year
      adds an emergency (ambulance, ER, hospital admission) to whichever
      family member makes it most expensive.
-   - `index.ts` ranks the arrangements and recommends the cheapest expected
-     year whose bad-year shock the family's savings can absorb.
+   - `index.ts` ranks the arrangements. It never recommends one that another
+     beats in every scenario, then picks the cheapest expected year whose
+     bad-year shock the family's savings can absorb.
+   - `year.ts` replays the bills a family logs during the year through the
+     same cost-sharing code, in date order, to show what they owe for each
+     bill, flag overcharges and track progress to each deductible.
+4. **Track the year.** After enrolling, the family logs each bill on `/year`,
+   sees what the plan says they owe, prices the next visit, and saves the
+   year's key dates, including next open enrollment, to their calendar.
+
+## Screens
+
+| Route | What it does |
+| --- | --- |
+| `/` | Landing page |
+| `/start` | Upload plan summaries, review the extracted numbers, add premiums |
+| `/profile` | Family questionnaire with branching questions |
+| `/result` | The recommendation, every option, scenarios, assumptions, prices used |
+| `/year` | Plan-year tracker: bills, deductible progress, visit estimate, key dates |
 
 There are no accounts. A visitor's plans and profile stay in their browser
 (`src/lib/store/session.ts`).
@@ -42,10 +59,11 @@ There are no accounts. A visitor's plans and profile stay in their browser
 
 | Part | State |
 | --- | --- |
-| Cost engine, arrangements, scenarios | Working, covered by tests |
-| SBC extraction (`POST /api/extract`) | Contract and validation only, returns 501 |
-| Upload, review, profile and result screens | Not built yet |
-| Reference prices (`src/lib/domain/reference-prices.ts`) | Rough estimates, not yet sourced |
+| Cost engine, scenarios, plan-year tracker | Working, covered by tests |
+| Landing, family questionnaire, result and plan-year screens | Working |
+| SBC extraction (`POST /api/extract`) and the `/start` screen | In progress |
+| Paywall and test-mode checkout | In progress |
+| Reference prices (`src/lib/domain/reference-prices.ts`) | Estimates, sources being added |
 
 ## Key dependencies
 
@@ -53,7 +71,7 @@ There are no accounts. A visitor's plans and profile stay in their browser
 - OpenAI API: reads the numbers out of uploaded SBC PDFs, nothing else
 - zod: validates everything the model returns before it is used
 - Stripe (test mode): checkout for the annual subscription
-- Vitest: tests for the cost engine
+- Vitest: tests for the cost engine, the plan-year tracker and the questionnaire
 
 ## Run it
 
