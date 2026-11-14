@@ -19,8 +19,9 @@ export function PricingNotes() {
       <div className="space-y-3 px-5 pb-5">
         <p className="max-w-prose text-sm text-ink-soft">
           Deductibles and coinsurance apply to the price your insurer has agreed with in-network
-          providers. We use a typical agreed price for each service. Your plan&apos;s prices may
-          differ.
+          providers. We use a typical agreed price for each service from published claims research.
+          Where we found no reliable public figure, the price is our estimate and marked as such.
+          Your plan&apos;s prices may differ.
         </p>
         <table className="w-full text-sm">
           <thead>
@@ -38,6 +39,9 @@ export function PricingNotes() {
                   <td className="py-2">
                     {SERVICE_LABELS[key]}
                     <span className="block text-ink-faint">per {price.unit}</span>
+                    {price.measured && (
+                      <span className="block max-w-md text-xs text-ink-faint">{price.measured}</span>
+                    )}
                   </td>
                   <td className="py-2 text-right tabular-nums">{formatUsd(price.allowed)}</td>
                   <td className="py-2 pl-3 text-right">
