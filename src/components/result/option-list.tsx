@@ -5,11 +5,23 @@ const columns = "sm:grid sm:grid-cols-[minmax(0,1fr)_7rem_7rem_7rem] sm:items-ba
 
 /** Every valid way to cover the family as ledger rows, cheapest expected year first. */
 export function OptionList({ ranked, bestId }: { ranked: ArrangementResult[]; bestId: string }) {
+  const scale = Math.max(...ranked.map((r) => r.costs.bad), 1);
+  const width = (amount: number) => ({ width: `${(amount / scale) * 100}%` });
   return (
     <section aria-labelledby="options-title" className="space-y-3">
       <h2 id="options-title" className="text-xl font-bold">
         All {ranked.length} ways to cover your family
       </h2>
+      <p aria-hidden className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-soft">
+        <span className="inline-flex items-center gap-2">
+          <span className="size-3 rounded-full bg-ink" />
+          Expected year
+        </span>
+        <span className="inline-flex items-center gap-2">
+          <span className="size-3 rounded-full bg-risk" />
+          Bad year
+        </span>
+      </p>
       <div
         aria-hidden
         className={`hidden border-b border-rule-strong pb-2 text-sm text-ink-faint ${columns}`}
@@ -38,6 +50,10 @@ export function OptionList({ ranked, bestId }: { ranked: ArrangementResult[]; be
                   <Figure label="Bad year" value={r.costs.bad} />
                   <Figure label="Premiums" value={r.premiums} />
                 </dl>
+              </div>
+              <div aria-hidden className="mt-3 space-y-1">
+                <div className={`h-2 rounded-full ${isBest ? "bg-save" : "bg-ink"}`} style={width(r.costs.expected)} />
+                <div className="h-2 rounded-full bg-risk" style={width(r.costs.bad)} />
               </div>
               {r.flags.length > 0 && (
                 <ul className="mt-2 space-y-1 text-sm text-risk">

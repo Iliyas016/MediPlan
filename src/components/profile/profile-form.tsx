@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { saveSession, type Session } from "@/lib/store/session";
 import { useSession } from "@/lib/store/use-session";
+import { CareArt, CushionArt } from "@/components/ui/art";
+import { FamilyStrip } from "./family-strip";
 import { Button } from "@/components/ui/button";
 import { CheckboxField, ChoiceField, NumberField } from "./fields";
 import {
@@ -101,12 +103,21 @@ function ProfileFormLoaded({ session }: { session: Session }) {
   return (
     <form onSubmit={submit} className="space-y-8">
       <header className="space-y-3">
-        <p className="text-sm font-medium text-ink-faint">
-          Step {step + 1} of {STEPS.length}
-        </p>
-        <h1 ref={stepRef} tabIndex={-1} className="text-3xl font-extrabold outline-none sm:text-4xl">
-          {STEPS[step]}
-        </h1>
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-ink-faint">
+              Step {step + 1} of {STEPS.length}
+            </p>
+            <h1 ref={stepRef} tabIndex={-1} className="text-3xl font-extrabold outline-none sm:text-4xl">
+              {STEPS[step]}
+            </h1>
+          </div>
+          {step > 0 && (
+            <div key={step} className="enter w-20 shrink-0 sm:w-28">
+              {step === 1 ? <CareArt /> : <CushionArt />}
+            </div>
+          )}
+        </div>
         {step === 0 && (
           <p className="max-w-prose text-ink-soft">
             Skip anything you are not sure about: we use a typical value and show it with your
@@ -126,6 +137,13 @@ function ProfileFormLoaded({ session }: { session: Session }) {
 
       {step === 0 && (
         <section aria-label="Who needs coverage" className="space-y-6">
+          <FamilyStrip
+            people={activePeople(draft).map(({ person, fallbackName }) => ({
+              id: person.id,
+              role: person.role,
+              name: person.name.trim() || fallbackName,
+            }))}
+          />
           <ChoiceField
             legend="Adults"
             value={draft.hasPartner ? "couple" : "single"}

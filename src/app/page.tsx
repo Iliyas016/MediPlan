@@ -1,12 +1,13 @@
 import { ButtonLink } from "@/components/ui/button";
 import { stagger } from "@/components/ui/motion";
-import { YearComparison } from "@/components/landing/year-comparison";
+import { YearExplorer } from "@/components/landing/year-explorer";
+import { AnswerArt, FamilyArt, PlansArt } from "@/components/landing/step-art";
 import { HeroOrnaments } from "@/components/landing/hero-ornaments";
 
 const STEPS = [
-  { title: "Add your plans", body: "Upload the PDFs from both jobs, or try samples." },
-  { title: "Describe your family", body: "Who needs coverage and how much care you expect." },
-  { title: "Get the answer", body: "The cheapest safe way to cover everyone, in dollars." },
+  { title: "Add your plans", body: "Upload the PDFs from both jobs, or try samples.", Art: PlansArt },
+  { title: "Describe your family", body: "Who needs coverage and how much care you expect.", Art: FamilyArt },
+  { title: "Get the answer", body: "The cheapest safe way to cover everyone, in dollars.", Art: AnswerArt },
 ];
 
 export default function Home() {
@@ -44,18 +45,23 @@ export default function Home() {
           <h2 id="how-title" className="sr-only">
             How it works
           </h2>
-          <ol className="grid gap-6 sm:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <li key={step.title} className="flex gap-3">
-                <span
-                  aria-hidden
-                  className="grid size-7 shrink-0 place-items-center rounded-full bg-ink text-sm font-bold text-paper tabular-nums"
-                >
-                  {i + 1}
-                </span>
-                <div className="space-y-1">
-                  <h3 className="font-bold">{step.title}</h3>
-                  <p className="text-sm text-ink-soft">{step.body}</p>
+          <ol className="grid gap-8 sm:grid-cols-3 sm:gap-6">
+            {STEPS.map(({ title, body, Art }, i) => (
+              <li key={title} className="step-card flex items-center gap-4 sm:block">
+                <div className="w-24 shrink-0 sm:w-32">
+                  <Art />
+                </div>
+                <div className="flex gap-3 sm:mt-4">
+                  <span
+                    aria-hidden
+                    className="grid size-7 shrink-0 place-items-center rounded-full bg-ink text-sm font-bold text-paper tabular-nums"
+                  >
+                    {i + 1}
+                  </span>
+                  <div className="space-y-1">
+                    <h3 className="font-bold">{title}</h3>
+                    <p className="text-sm text-ink-soft">{body}</p>
+                  </div>
                 </div>
               </li>
             ))}
@@ -68,7 +74,7 @@ export default function Home() {
           <h2 id="why-title" className="text-2xl font-extrabold sm:text-3xl">
             The cheapest premium is not always the cheapest year
           </h2>
-          <YearComparison />
+          <YearExplorer />
         </div>
       </section>
 

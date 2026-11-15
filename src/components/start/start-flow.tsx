@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type ChangeEvent, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type Dispatch, type DragEvent, type SetStateAction } from "react";
+import { DocumentArt } from "@/components/ui/art";
 import { Button } from "@/components/ui/button";
 import { ExtractedPlanSchema, type Plan } from "@/lib/domain/plan";
 import { MAX_PDF_BYTES } from "@/lib/extract/limits";
@@ -279,7 +280,15 @@ function EmployerSection({
   onRemove: (id: string) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
   const headingId = `employer-${employer}`;
+
+  const drop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDragging(false);
+    const files = Array.from(event.dataTransfer.files);
+    if (files.length > 0) onUpload(files);
+  };
 
   const pick = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -305,9 +314,12 @@ function EmployerSection({
         switch (item.status) {
           case "reading":
             return (
-              <div key={item.id} role="status" className="rounded-xl border border-rule bg-surface px-4 py-4 sm:px-5">
-                <p className="font-medium break-all">{item.fileName}</p>
-                <p className="text-sm text-ink-faint">Reading the plan… this takes about 20 seconds.</p>
+              <div key={item.id} role="status" className="flex items-center gap-4 rounded-xl border border-rule bg-surface px-4 py-4 sm:px-5">
+                <DocumentArt scanning className="w-10" />
+                <div>
+                  <p className="font-medium break-all">{item.fileName}</p>
+                  <p className="text-sm text-ink-faint">Reading the plan… this takes about 20 seconds.</p>
+                </div>
               </div>
             );
           case "failed":
@@ -338,23 +350,39 @@ function EmployerSection({
         }
       })}
 
-      <div className="flex flex-wrap gap-3">
-        <input
-          ref={inputRef}
-          type="file"
-          accept="application/pdf,.pdf"
-          multiple
-          onChange={pick}
-          className="sr-only"
-          tabIndex={-1}
-          aria-hidden
-        />
-        <Button type="button" onClick={() => inputRef.current?.click()} variant={items.length ? "secondary" : "primary"}>
-          {items.length ? "Upload another SBC" : "Upload SBC PDFs"}
-        </Button>
-        <Button type="button" variant="secondary" onClick={() => onManual()}>
-          Enter a plan by hand
-        </Button>
+      <div
+        onDragOver={(event) => {
+          event.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={drop}
+        className={`flex flex-wrap items-center gap-x-5 gap-y-4 rounded-xl border border-dashed px-4 py-4 transition-colors duration-150 sm:px-5 ${
+          dragging ? "border-ink bg-highlight" : "border-rule-strong"
+        }`}
+      >
+        {items.length === 0 && <DocumentArt className="w-12" />}
+        <p className="min-w-40 flex-1 text-sm text-ink-soft">
+          {dragging ? "Drop to read these plans." : "Drag SBC PDFs here, or choose how to add a plan."}
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <input
+            ref={inputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            multiple
+            onChange={pick}
+            className="sr-only"
+            tabIndex={-1}
+            aria-hidden
+          />
+          <Button type="button" onClick={() => inputRef.current?.click()} variant={items.length ? "secondary" : "primary"}>
+            {items.length ? "Upload another SBC" : "Upload SBC PDFs"}
+          </Button>
+          <Button type="button" variant="secondary" onClick={() => onManual()}>
+            Enter a plan by hand
+          </Button>
+        </div>
       </div>
     </section>
   );

@@ -398,6 +398,85 @@ body > header nav a[aria-current="step"] {
   }
 }
 
+/* Step drawings lean toward the pointer; the tick is drawn in paper on ink. */
+.step-art {
+  color: var(--ink-faint);
+  filter: drop-shadow(0 8px 8px color-mix(in srgb, var(--ink) 8%, transparent));
+  transition: transform 450ms var(--ease-out-expo);
+}
+
+.step-art__tick {
+  stroke: var(--surface);
+  stroke-width: 3.5;
+}
+
+@media (hover: hover) {
+  .step-card:hover .step-art {
+    transform: translateY(-4px) rotate(-3deg);
+  }
+}
+
+/* Family figures and the sheet that is being read. */
+.person-figure {
+  color: var(--ink-soft);
+  stroke-width: 2.5;
+}
+
+.doc-scan {
+  animation: doc-scan 1300ms ease-in-out infinite alternate;
+}
+
+@keyframes doc-scan {
+  to {
+    transform: translateY(31px);
+  }
+}
+
+/* The hospital-bill slider: an ink track with a paper thumb. */
+.year-slider {
+  appearance: none;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.year-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rule);
+}
+
+.year-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rule);
+}
+
+.year-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -11px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--ink) 18%, transparent);
+  transition: transform 150ms ease-out;
+}
+
+.year-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+.year-slider:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
 /* The highlighter stroke across the one figure that matters. */
 .marker {
   color: var(--on-highlight);
@@ -470,7 +549,8 @@ body > header nav a[aria-current="step"] {
   .marker,
   .enter,
   .draw,
-  .grow {
+  .grow,
+  .doc-scan {
     animation: none;
   }
 

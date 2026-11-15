@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PersonFigure } from "@/components/ui/art";
 import { CheckboxField, GateField, NumberField, TextField } from "./fields";
 import type { PersonDraft } from "./household-draft";
 
@@ -27,7 +28,10 @@ export function PersonCard({
       className="space-y-5 rounded-xl border border-rule bg-surface p-5"
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="text-lg font-bold">{name}</h3>
+        <h3 className="flex items-center gap-2.5 text-lg font-bold">
+          <PersonFigure role={person.role} className="w-7" />
+          {name}
+        </h3>
         {!showAbout && (
           <button
             type="button"

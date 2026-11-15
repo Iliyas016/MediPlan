@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { recommend, type Recommendation } from "@/lib/calc";
 import { findDecisiveAssumptions } from "@/lib/calc/sensitivity";
 import { REFERENCE_PRICES } from "@/lib/domain/reference-prices";
@@ -11,6 +11,7 @@ import { useSession } from "@/lib/store/use-session";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { CountUp } from "@/components/ui/count-up";
 import { stagger } from "@/components/ui/motion";
+import { FamilyArt, PlansArt } from "@/components/landing/step-art";
 import { PaidGate } from "@/components/paywall/paywall";
 import { AssumptionList } from "./assumption-list";
 import { Coverage } from "./coverage";
@@ -55,6 +56,7 @@ export function ResultView() {
           body="We compare the plans your employer offers. Upload their plan summaries or enter the numbers by hand."
           href="/start"
           action="Add plans"
+          art={<PlansArt />}
         />
       );
     case "missing-profile":
@@ -64,6 +66,7 @@ export function ResultView() {
           body="Who needs coverage and how much care you expect decides which plan is cheapest."
           href="/profile"
           action="Describe your family"
+          art={<FamilyArt />}
         />
       );
     case "no-valid-option":
@@ -73,6 +76,7 @@ export function ResultView() {
           body="Each way of covering your family needs a premium for the right coverage level, for example employee plus children. Fill in the premiums for every level your employer offers."
           href="/start"
           action="Review premiums"
+          art={<PlansArt />}
         />
       );
     case "ready":
@@ -92,6 +96,7 @@ function Verdict({
   const router = useRouter();
   const household = session.household!;
   const labelOf = (id: string) => household.people.find((p) => p.id === id)?.label ?? "Someone";
+  const roleOf = (id: string) => household.people.find((p) => p.id === id)?.role ?? "adultA";
   const inSentence = (id: string) => {
     const label = labelOf(id);
     return label === "You" ? "you" : label;
@@ -107,7 +112,7 @@ function Verdict({
           Your best option
         </h1>
         <div style={stagger(1)} className="enter">
-          <Coverage arrangement={best.arrangement} labelOf={labelOf} />
+          <Coverage arrangement={best.arrangement} labelOf={labelOf} roleOf={roleOf} />
         </div>
         <div style={stagger(2)} className="enter space-y-2">
           <p className="text-lg text-ink-soft">
@@ -195,14 +200,17 @@ function EmptyState({
   body,
   href,
   action,
+  art,
 }: {
   title: string;
   body: string;
   href: string;
   action: string;
+  art: ReactNode;
 }) {
   return (
     <section className="space-y-5">
+      <div className="enter w-28 sm:w-36">{art}</div>
       <h1 className="text-3xl font-extrabold">{title}</h1>
       <p className="max-w-prose text-lg text-ink-soft">{body}</p>
       <ButtonLink href={href}>{action}</ButtonLink>

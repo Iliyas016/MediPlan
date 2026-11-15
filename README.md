@@ -270,7 +270,7 @@ again, and the subscription renews.
 | Flagged fields after the tier fix | 18, down from 37, on the same five documents | same |
 | Sourced prices | **13 of 17** services cite claims research | `docs/research/prices.md` |
 | Sample documents | Five real, publicly posted 2026 SBCs, unchanged, with source URLs | `public/samples/SOURCES.md` |
-| Tests | **60 unit tests** on the engine, sensitivity, tracker, calendar, questionnaire, extraction normalizer and checkout | `npm test` |
+| Tests | **63 unit tests** on the engine, sensitivity, tracker, calendar, questionnaire, extraction normalizer, checkout and the landing example | `npm test` |
 
 Accuracy per document (production, 14 November 2026):
 

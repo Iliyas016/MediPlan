@@ -115,6 +115,7 @@ function Tracker({ session, arrangement }: { session: Session; arrangement: Arra
   const household = session.household!;
   const status = useMemo(() => trackYear(arrangement, session.ledger), [arrangement, session.ledger]);
   const labelOf = (id: string) => household.people.find((p) => p.id === id)?.label ?? "Someone";
+  const roleOf = (id: string) => household.people.find((p) => p.id === id)?.role ?? "adultA";
   const year = planYearFor(new Date());
   const hasHsa = arrangement.parts.some((p) => p.plan.hsaEligible);
 
@@ -133,7 +134,7 @@ function Tracker({ session, arrangement }: { session: Session; arrangement: Arra
           Your {year} plan year
         </h1>
         <div style={stagger(1)} className="enter">
-          <Coverage arrangement={arrangement} labelOf={labelOf} />
+          <Coverage arrangement={arrangement} labelOf={labelOf} roleOf={roleOf} />
         </div>
         <p className="text-lg text-ink-soft">
           {status.entries.length === 0 ? (
